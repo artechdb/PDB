@@ -1,0 +1,295 @@
+# Oracle PDB Management Toolkit
+
+A comprehensive PyQt6 GUI application for Oracle Pluggable Database (PDB) administration, supporting database health checks and PDB clone operations with external authentication.
+
+## Features
+
+### 1. DB Health Check
+- **Three flexible connection options**:
+  1. **External Auth + TNS Alias** - Traditional Oracle workflow
+  2. **External Auth + Hostname/Port** - ⭐ NEW! No TNS configuration needed
+  3. **Username/Password + Hostname/Port** - No Oracle Client required (Thin Mode)
+- **Maximum flexibility**: Connect using TNS alias OR direct hostname/port
+- **TNS-free connections**: Use external auth without tnsnames.ora configuration
+- Generates comprehensive HTML reports with database performance metrics
+- Displays database version, status, and role information
+- Shows tablespace usage statistics
+- Lists all PDBs with their states and sizes
+- Reports top wait events for performance analysis
+- Session statistics and counts
+
+### 2. PDB Clone Operations
+
+#### Precheck
+Validates compatibility between source and target environments:
+- Database version and patch level comparison
+- Character set compatibility
+- DB registry components comparison
+- Source PDB status verification
+- TDE configuration validation
+- Local undo mode verification
+- DBMS_PDB.CHECK_PLUG_COMPATIBILITY analysis
+- Side-by-side Oracle parameter comparison
+
+#### Clone Execution
+Performs the actual PDB clone operation:
+- Creates public database link with CURRENT_USER authentication
+- Clones PDB using `CREATE PLUGGABLE DATABASE ... FROM ...@LINK`
+- Opens the new PDB in READ WRITE mode
+- Saves PDB state for persistence
+- Automatic cleanup of database links
+
+#### Postcheck
+Validates successful clone operation:
+- Oracle parameter comparison between source and target PDBs
+- Database service name verification
+- Identifies any configuration differences
+
+## Architecture & Security
+
+### Flexible Authentication
+The application supports **two authentication modes**:
+
+1. **External Authentication** (Zero-Credential Policy):
+   ```python
+   oracledb.connect(dsn=dsn, externalauth=True)
+   ```
+   - No passwords stored or transmitted
+   - Requires Thick Mode and OS authentication or Oracle Wallet
+
+2. **Username/Password** (Direct Connection):
+   ```python
+   oracledb.connect(user=username, password=password, dsn=f"{hostname}:{port}/{service}")
+   ```
+   - Works in Thin Mode (no Oracle Client installation required)
+   - Passwords entered per session (not stored)
+   - Ideal for ad-hoc health checks
+
+### Thick Mode Initialization
+The toolkit uses Oracle Thick Mode to support:
+- Remote authentication
+- Database links
+- Advanced Oracle features
+
+```python
+oracledb.init_oracle_client()
+```
+
+## Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- Oracle Instant Client (required for Thick Mode and external authentication)
+- Oracle Database 19c or higher
+- External authentication configured (OS authentication or Oracle Wallet)
+
+### Quick Setup
+
+1. **Install Python dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Install Oracle Instant Client**:
+   - Download from: https://www.oracle.com/database/technologies/instant-client/downloads.html
+   - Extract to `C:\oracle\instantclient_19_8` (or similar)
+   - Add to PATH or the application will auto-detect
+
+3. **Configure external authentication**:
+   - **Option A**: OS Authentication (Windows NTS)
+   - **Option B**: Oracle Wallet
+
+4. **Test your setup**:
+   ```bash
+   python test_connection.py
+   ```
+
+For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
+
+## 📖 Documentation
+
+- **[QUICK_START.md](QUICK_START.md)** - Quick start guide with examples
+- **[INSTALLATION.md](INSTALLATION.md)** - Detailed installation and setup
+- **[CONNECTION_OPTIONS_SUMMARY.md](CONNECTION_OPTIONS_SUMMARY.md)** - ⭐ All 3 connection options explained
+- **[CONNECTION_MODES.md](CONNECTION_MODES.md)** - Connection methods reference
+- **[WHATS_NEW.md](WHATS_NEW.md)** - Latest features and updates
+
+## Usage
+
+### Starting the Application
+
+```bash
+python oracle_pdb_toolkit.py
+```
+
+### DB Health Check Tab
+
+1. Enter the database TNS alias (e.g., `ORCL` or `orcl_high`)
+2. Click **Generate Health Report**
+3. View the generated HTML report in the current directory
+
+### PDB Clone Tab
+
+#### Running Precheck
+
+1. Fill in the configuration:
+   - **Source CDB**: TNS alias of source container database
+   - **Source PDB**: Name of the PDB to clone
+   - **Source SCAN Host**: Source SCAN hostname (optional)
+   - **Target CDB**: TNS alias of target container database
+   - **Target PDB**: Name for the new PDB
+   - **Target SCAN Host**: Target SCAN hostname (optional)
+
+2. Click **Run Precheck**
+
+3. Review the generated `pdb_validation_report_[timestamp].html`
+
+4. Verify all checks show **PASS** status
+
+#### Executing Clone
+
+1. After successful precheck, click **Execute PDB Clone**
+
+2. Confirm the operation in the dialog
+
+3. Monitor progress in the output area
+
+4. Wait for completion confirmation
+
+#### Running Postcheck
+
+1. After clone completes, click **Run Postcheck**
+
+2. Review the generated `pdb_postcheck_report_[timestamp].html`
+
+3. Verify parameter consistency between source and target
+
+## HTML Reports
+
+All operations generate HTML reports with three mandatory sections:
+
+### Section 1: Connection Metadata
+- Source and target CDB information
+- Source and target PDB names
+- SCAN host information
+
+### Section 2: Verification Checks
+- Validation results with **PASS/FAILED** status
+- Source and target values for each check
+- Detailed violation messages when applicable
+
+### Section 3: Oracle Parameter Comparison
+- Side-by-side parameter comparison
+- Color-coded differences:
+  - **Green**: Parameters match
+  - **Red**: Parameters differ
+
+## Technical Details
+
+### PDB Clone Workflow
+
+1. **Validation Phase** (Precheck):
+   - Connect to source and target CDBs
+   - Compare database versions and configurations
+   - Generate XML manifest using `DBMS_PDB.DESCRIBE`
+   - Run compatibility check with `DBMS_PDB.CHECK_PLUG_COMPATIBILITY`
+   - Query `PDB_PLUG_IN_VIOLATIONS` if incompatible
+   - Compare all Oracle parameters
+
+2. **Clone Phase**:
+   - Create database link: `CREATE PUBLIC DATABASE LINK ... CONNECT TO CURRENT_USER`
+   - Clone PDB: `CREATE PLUGGABLE DATABASE ... FROM ...@LINK`
+   - Open PDB: `ALTER PLUGGABLE DATABASE ... OPEN READ WRITE`
+   - Save state: `ALTER PLUGGABLE DATABASE ... SAVE STATE`
+   - Remove database link
+
+3. **Verification Phase** (Postcheck):
+   - Compare parameters between cloned and source PDBs
+   - Verify service names
+   - Identify configuration drift
+
+### Background Processing
+
+All database operations run in background threads (`QThread`) to keep the UI responsive:
+- Progress updates appear in real-time
+- Long-running operations don't freeze the interface
+- Status messages flush immediately to the output area
+
+## Error Handling
+
+The application includes comprehensive error handling:
+- Connection failures are reported with detailed messages
+- SQL errors include full stack traces
+- Validation failures show specific reasons
+- Violations from compatibility checks are displayed in reports
+
+## Troubleshooting
+
+### Oracle Client Not Initialized
+**Error**: "Oracle Client initialization failed"
+
+**Solution**: Install Oracle Instant Client and ensure it's in your PATH
+
+### External Authentication Fails
+**Error**: "ORA-01017: invalid username/password"
+
+**Solution**: Configure Oracle Wallet or OS authentication properly
+
+### Database Link Fails
+**Error**: "ORA-02019: connection description for remote database not found"
+
+**Solution**: Verify TNS aliases are correctly configured in tnsnames.ora
+
+### PDB Clone Fails
+**Error**: Various ORA- errors during clone
+
+**Solution**:
+1. Run precheck first and resolve all FAILED items
+2. Check PDB_PLUG_IN_VIOLATIONS view for specific issues
+3. Ensure adequate storage in target CDB
+
+## Best Practices
+
+1. **Always run precheck** before attempting a clone operation
+2. **Review validation reports** carefully - all checks should pass
+3. **Run postcheck** after cloning to verify success
+4. **Keep reports** for audit and troubleshooting purposes
+5. **Test in non-production** environments first
+
+## File Outputs
+
+The toolkit generates files in the current working directory:
+
+- `db_health_report_[timestamp].html` - Health check reports
+- `pdb_validation_report_[timestamp].html` - Precheck reports
+- `pdb_postcheck_report_[timestamp].html` - Postcheck reports
+- XML manifests generated as CLOB (in-memory, no file system access required)
+
+## Limitations
+
+- Requires external authentication (no password-based auth)
+- Source and target must be reachable via TNS
+- Clone operation requires sufficient storage in target CDB
+- TDE wallets must be configured separately
+- User must have appropriate privileges for CDB and PDB operations
+
+## Future Enhancements
+
+Planned features for future releases:
+- Additional health check metrics (AWR snapshots, ASH reports)
+- PDB refresh operations
+- Automated remediation for common violations
+- Scheduled health checks
+- Export/import PDB operations
+- Multi-PDB bulk operations
+
+## License
+
+Oracle PDB Management Toolkit - Internal Use
+
+## Support
+
+For issues or questions, consult your Oracle DBA team or refer to Oracle documentation:
+- Oracle Database Administrator's Guide
+- Oracle Multitenant Administrator's Guide
+- Oracle Database PL/SQL Packages and Types Reference (DBMS_PDB)

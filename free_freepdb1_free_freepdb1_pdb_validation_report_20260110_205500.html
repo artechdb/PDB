@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDB Clone Validation Report</title>
+    <link rel="stylesheet" href="report_styles.css">
+</head>
+<body>
+    <h1>PDB Clone Validation Report (Precheck) - <span class="pass">PASS</span></h1>
+    <div class="timestamp">Generated: 2026-01-10 20:55:00</div>
+
+    <h2>Section 1: Connection Metadata</h2>
+    <table>
+        <tr><th>Component</th><th>Source</th><th>Target</th></tr>
+        <tr><td>CDB</td><td>free</td><td>free</td></tr>
+        <tr><td>PDB</td><td>freepdb1</td><td>freepdb1</td></tr>
+        <tr><td colspan='3' style='background-color: #f0f0f0; font-weight: bold;'>Instance Information</td></tr>
+        <tr><td>Instance 1</td><td>Instance 1: FREE @ rac1</td><td>Instance 1: FREE @ rac2</td></tr>
+        <tr><td colspan='3' style='background-color: #f0f0f0; font-weight: bold;'>PDB Size Information</td></tr>
+        <tr><td>PDB Total Size (GB)</td><td>0.86 GB</td><td>0.85</td></tr>
+
+    </table>
+
+    <h2>Section 2: Verification Checks</h2>
+    <table>
+        <tr><th>Check</th><th>Status</th><th>Source Value</th><th>Target Value</th></tr>
+        <tr>
+            <td>Database Version and Patch Level</td>
+            <td class="pass">PASS</td>
+            <td>23.26.0.0.0</td>
+            <td>23.26.0.0.0</td>
+        </tr>
+        <tr>
+            <td>Character Set Compatibility</td>
+            <td class="pass">PASS</td>
+            <td>AL32UTF8</td>
+            <td>AL32UTF8</td>
+        </tr>
+        <tr>
+            <td>DB Registry Components</td>
+            <td class="pass">PASS</td>
+            <td>14 components</td>
+            <td>14 components</td>
+        </tr>
+        <tr>
+            <td>Source PDB Open Status</td>
+            <td class="pass">PASS</td>
+            <td>READ WRITE</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>Target PDB Does Exist</td>
+            <td class="pass">PASS</td>
+            <td>N/A</td>
+            <td>PDB already exists (READ WRITE)</td>
+        </tr>
+        <tr>
+            <td>TDE Configuration Method</td>
+            <td class="pass">PASS</td>
+            <td>FILE</td>
+            <td>FILE</td>
+        </tr>
+        <tr>
+            <td>Local Undo Mode</td>
+            <td class="pass">PASS</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr>
+            <td>MAX_STRING_SIZE Compatibility</td>
+            <td class="pass">PASS</td>
+            <td>STANDARD</td>
+            <td>STANDARD</td>
+        </tr>
+        <tr>
+            <td>Timezone Setting Compatibility</td>
+            <td class="pass">PASS</td>
+            <td>+00:00</td>
+            <td>+00:00</td>
+        </tr>
+        <tr>
+            <td>MAX_PDB_STORAGE Limit</td>
+            <td class="pass">PASS</td>
+            <td>0.86 GB</td>
+            <td>Not configured (unlimited)</td>
+        </tr>
+        <tr>
+            <td>DBMS_PDB Plug Compatibility</td>
+            <td class="fail">SKIPPED</td>
+            <td>N/A</td>
+            <td>File-based only (requires manual check)</td>
+        </tr>
+
+    </table>
+
+    <h2>Section 3: ORACLE CDB Parameters Comparison (Non-Default)</h2>
+    <table>
+        <tr><th>Parameter Name</th><th>Source Value</th><th>Target Value</th><th>Status</th></tr>
+        <tr class="match">
+            <td>_instance_recovery_bloom_filter_size</td>
+            <td>1048576</td>
+            <td>1048576</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>common_user_prefix</td>
+            <td>None</td>
+            <td>None</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>compatible</td>
+            <td>23.6.0</td>
+            <td>23.6.0</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>control_files</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_size</td>
+            <td>8192</td>
+            <td>8192</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>db_name</td>
+            <td>FREE</td>
+            <td>FREE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>diagnostic_dest</td>
+            <td>/opt/oracle</td>
+            <td>/opt/oracle</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>dispatchers</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>enable_pluggable_database</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>fast_start_parallel_rollback</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>local_listener</td>
+            <td>LISTENER_FREE</td>
+            <td>LISTENER_FREE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>nls_language</td>
+            <td>AMERICAN</td>
+            <td>AMERICAN</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>nls_territory</td>
+            <td>AMERICA</td>
+            <td>AMERICA</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>open_cursors</td>
+            <td>300</td>
+            <td>300</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>pga_aggregate_target</td>
+            <td>536870912</td>
+            <td>536870912</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>processes</td>
+            <td>200</td>
+            <td>200</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>remote_login_passwordfile</td>
+            <td>EXCLUSIVE</td>
+            <td>EXCLUSIVE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>sga_target</td>
+            <td>1610612736</td>
+            <td>1610612736</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>undo_tablespace</td>
+            <td>UNDOTBS1</td>
+            <td>UNDOTBS1</td>
+            <td>SAME</td>
+        </tr>
+
+    </table>
+
+    <h2>Section 4: ORACLE PDB Parameters Comparison (Non-Default)</h2>
+
+    <p style="background-color: #d1ecf1; padding: 10px; border-left: 4px solid #0c5460; margin: 10px 0;">
+        <strong>Note:</strong> Target PDB exists (READ WRITE).
+        Comparing current parameter values between source and target PDBs.
+    </p>
+
+    <table>
+        <tr><th>Parameter Name</th><th>Source PDB Value</th><th>Target PDB Value</th><th>Status</th></tr>
+        <tr class="match">
+            <td>_instance_recovery_bloom_filter_size</td>
+            <td>1048576</td>
+            <td>1048576</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>common_user_prefix</td>
+            <td>None</td>
+            <td>None</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>compatible</td>
+            <td>23.6.0</td>
+            <td>23.6.0</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>control_files</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_size</td>
+            <td>8192</td>
+            <td>8192</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>db_name</td>
+            <td>FREE</td>
+            <td>FREE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>diagnostic_dest</td>
+            <td>/opt/oracle</td>
+            <td>/opt/oracle</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>dispatchers</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>enable_pluggable_database</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>fast_start_parallel_rollback</td>
+            <td>LOW</td>
+            <td>LOW</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>local_listener</td>
+            <td>LISTENER_FREE</td>
+            <td>LISTENER_FREE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>nls_language</td>
+            <td>AMERICAN</td>
+            <td>AMERICAN</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>nls_territory</td>
+            <td>AMERICA</td>
+            <td>AMERICA</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>open_cursors</td>
+            <td>300</td>
+            <td>300</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>pga_aggregate_target</td>
+            <td>536870912</td>
+            <td>536870912</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>processes</td>
+            <td>200</td>
+            <td>200</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>remote_login_passwordfile</td>
+            <td>EXCLUSIVE</td>
+            <td>EXCLUSIVE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>sga_target</td>
+            <td>0</td>
+            <td>0</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>spatial_vector_acceleration</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+            <td>SAME</td>
+        </tr>
+        <tr class="match">
+            <td>undo_tablespace</td>
+            <td>UNDOTBS1</td>
+            <td>UNDOTBS1</td>
+            <td>SAME</td>
+        </tr>
+
+    </table>
+
+    <div class="footer">
+        <p>Generated by Oracle PDB Management Toolkit</p>
+    </div>
+</body>
+</html>

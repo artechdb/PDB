@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDB Clone Validation Report</title>
+    <link rel="stylesheet" href="report_styles.css">
+</head>
+<body>
+    <h1>PDB Clone Validation Report (Precheck)</h1>
+    <div class="timestamp">Generated: 2026-01-10 17:53:28</div>
+
+    <h2>Section 1: Connection Metadata</h2>
+    <table>
+        <tr><th>Component</th><th>Source</th><th>Target</th></tr>
+        <tr><td>CDB</td><td>FREE1</td><td>FREE2</td></tr>
+        <tr><td>PDB</td><td>freepdb1</td><td>freepdb2</td></tr>
+    </table>
+
+    <h2>Section 2: Verification Checks</h2>
+    <table>
+        <tr><th>Check</th><th>Status</th><th>Source Value</th><th>Target Value</th></tr>
+        <tr>
+            <td>Database Version and Patch Level</td>
+            <td class="pass">PASS</td>
+            <td>23.26.0.0.0</td>
+            <td>23.26.0.0.0</td>
+        </tr>
+        <tr>
+            <td>Character Set Compatibility</td>
+            <td class="pass">PASS</td>
+            <td>AL32UTF8</td>
+            <td>AL32UTF8</td>
+        </tr>
+        <tr>
+            <td>DB Registry Components</td>
+            <td class="pass">PASS</td>
+            <td>14 components</td>
+            <td>14 components</td>
+        </tr>
+        <tr>
+            <td>Source PDB Open Status</td>
+            <td class="fail">FAILED</td>
+            <td>PDB not found</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>TDE Configuration Method</td>
+            <td class="pass">PASS</td>
+            <td>FILE</td>
+            <td>FILE</td>
+        </tr>
+        <tr>
+            <td>Local Undo Mode</td>
+            <td class="pass">PASS</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr>
+            <td>DBMS_PDB Plug Compatibility</td>
+            <td class="fail">SKIPPED</td>
+            <td>Check failed</td>
+            <td>Error: ORA-06550: line 4, column 21:
+PLS-00306: wrong number or types of arguments in call to 'DESCRIBE'
+ORA-06550: line 4, column 21:
+PL/SQL: Statement ignored</td>
+        </tr>
+
+    </table>
+
+    <h2>Section 3: Oracle Parameter Comparison</h2>
+    <table>
+        <tr><th>Parameter Name</th><th>Source Value</th><th>Target Value</th></tr>
+        <tr class="match">
+            <td>DBFIPS_140</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>_instance_recovery_bloom_filter_size</td>
+            <td>1048576</td>
+            <td>1048576</td>
+        </tr>
+        <tr class="match">
+            <td>adg_account_info_tracking</td>
+            <td>LOCAL</td>
+            <td>LOCAL</td>
+        </tr>
+        <tr class="match">
+            <td>adg_redirect_dml</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>alert_log_max_size</td>
+            <td>1048576000</td>
+            <td>1048576000</td>
+        </tr>
+        <tr class="match">
+            <td>allow_global_dblinks</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>allow_group_access_to_sga</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>allow_legacy_reco_protocol</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>allow_rowid_column_type</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>allow_weak_crypto</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>approx_for_aggregation</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>approx_for_count_distinct</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>approx_for_percentile</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>aq_tm_processes</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>archive_lag_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>asm_diskstring</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>asm_preferred_read_failure_groups</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>audit_file_dest</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/audit</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/audit</td>
+        </tr>
+        <tr class="match">
+            <td>audit_sys_operations</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>audit_syslog_level</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>audit_trail</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>auto_start_pdb_services</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>autotask_max_active_pdbs</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>awr_pdb_autoflush_enabled</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>awr_pdb_max_parallel_slaves</td>
+            <td>10</td>
+            <td>10</td>
+        </tr>
+        <tr class="match">
+            <td>awr_snapshot_time_offset</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>background_core_dump</td>
+            <td>partial</td>
+            <td>partial</td>
+        </tr>
+        <tr class="match">
+            <td>background_dump_dest</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/log</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/log</td>
+        </tr>
+        <tr class="match">
+            <td>backup_tape_io_slaves</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>bitmap_merge_area_size</td>
+            <td>1048576</td>
+            <td>1048576</td>
+        </tr>
+        <tr class="match">
+            <td>blank_trimming</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>blockchain_table_max_no_drop</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>blockchain_table_retention_threshold</td>
+            <td>16</td>
+            <td>16</td>
+        </tr>
+        <tr class="match">
+            <td>buffer_pool_keep</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>buffer_pool_recycle</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>cdb_cluster</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>cdb_cluster_name</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offload_compaction</td>
+            <td>ADAPTIVE</td>
+            <td>ADAPTIVE</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offload_decryption</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offload_parameters</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offload_plan_display</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offload_processing</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>cell_offloadgroup_name</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>circuits</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>client_prefetch_rows</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>client_result_cache_lag</td>
+            <td>3000</td>
+            <td>3000</td>
+        </tr>
+        <tr class="match">
+            <td>client_result_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>client_statistics_level</td>
+            <td>TYPICAL</td>
+            <td>TYPICAL</td>
+        </tr>
+        <tr class="match">
+            <td>clonedb</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>clonedb_dir</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>cloud_table_commit_threshold</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>cluster_database</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>cluster_interconnects</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>commit_logging</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>commit_point_strength</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>commit_wait</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>commit_write</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>common_user_prefix</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>compatible</td>
+            <td>23.6.0</td>
+            <td>23.6.0</td>
+        </tr>
+        <tr class="match">
+            <td>connection_brokers</td>
+            <td>((TYPE=DEDICATED)(BROKERS=2)(CONNECTIONS=2000)), ((TYPE=EMON)(BROKERS=1))</td>
+            <td>((TYPE=DEDICATED)(BROKERS=2)(CONNECTIONS=2000)), ((TYPE=EMON)(BROKERS=1))</td>
+        </tr>
+        <tr class="match">
+            <td>container_data</td>
+            <td>ALL</td>
+            <td>ALL</td>
+        </tr>
+        <tr class="match">
+            <td>containers_parallel_degree</td>
+            <td>65535</td>
+            <td>65535</td>
+        </tr>
+        <tr class="match">
+            <td>control_file_record_keep_time</td>
+            <td>7</td>
+            <td>7</td>
+        </tr>
+        <tr class="match">
+            <td>control_files</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+            <td>/opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl</td>
+        </tr>
+        <tr class="match">
+            <td>control_management_pack_access</td>
+            <td>DIAGNOSTIC+TUNING</td>
+            <td>DIAGNOSTIC+TUNING</td>
+        </tr>
+        <tr class="match">
+            <td>core_dump_dest</td>
+            <td>/opt/oracle/diag/rdbms/free/FREE/cdump</td>
+            <td>/opt/oracle/diag/rdbms/free/FREE/cdump</td>
+        </tr>
+        <tr class="match">
+            <td>cpu_count</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>cpu_min_count</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>create_bitmap_area_size</td>
+            <td>8388608</td>
+            <td>8388608</td>
+        </tr>
+        <tr class="match">
+            <td>create_stored_outlines</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>cursor_bind_capture_destination</td>
+            <td>memory+disk</td>
+            <td>memory+disk</td>
+        </tr>
+        <tr class="match">
+            <td>cursor_invalidation</td>
+            <td>IMMEDIATE</td>
+            <td>IMMEDIATE</td>
+        </tr>
+        <tr class="match">
+            <td>cursor_sharing</td>
+            <td>EXACT</td>
+            <td>EXACT</td>
+        </tr>
+        <tr class="match">
+            <td>cursor_space_for_time</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>data_guard_max_io_time</td>
+            <td>240</td>
+            <td>240</td>
+        </tr>
+        <tr class="match">
+            <td>data_guard_max_longio_time</td>
+            <td>240</td>
+            <td>240</td>
+        </tr>
+        <tr class="match">
+            <td>data_guard_sync_latency</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>data_transfer_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_16k_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_2k_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_32k_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_4k_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_8k_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_big_table_cache_percent_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_buffers</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_checking</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_checksum</td>
+            <td>TYPICAL</td>
+            <td>TYPICAL</td>
+        </tr>
+        <tr class="match">
+            <td>db_block_size</td>
+            <td>8192</td>
+            <td>8192</td>
+        </tr>
+        <tr class="match">
+            <td>db_cache_advice</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>db_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_file_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_online_log_dest_1</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_online_log_dest_2</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_online_log_dest_3</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_online_log_dest_4</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_create_online_log_dest_5</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_domain</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_file_multiblock_read_count</td>
+            <td>128</td>
+            <td>128</td>
+        </tr>
+        <tr class="match">
+            <td>db_file_name_convert</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_files</td>
+            <td>200</td>
+            <td>200</td>
+        </tr>
+        <tr class="match">
+            <td>db_flash_cache_file</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_flash_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_flashback_log_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_flashback_log_dest_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_flashback_retention_target</td>
+            <td>1440</td>
+            <td>1440</td>
+        </tr>
+        <tr class="match">
+            <td>db_index_compression_inheritance</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>db_keep_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_lost_write_protect</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>db_name</td>
+            <td>FREE</td>
+            <td>FREE</td>
+        </tr>
+        <tr class="match">
+            <td>db_performance_profile</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_recovery_auto_rekey</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>db_recovery_file_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>db_recovery_file_dest_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_recycle_cache_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>db_securefile</td>
+            <td>PREFERRED</td>
+            <td>PREFERRED</td>
+        </tr>
+        <tr class="match">
+            <td>db_ultra_safe</td>
+            <td>OFF</td>
+            <td>OFF</td>
+        </tr>
+        <tr class="match">
+            <td>db_unique_name</td>
+            <td>FREE</td>
+            <td>FREE</td>
+        </tr>
+        <tr class="match">
+            <td>db_unrecoverable_scn_tracking</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>db_writer_processes</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>dbnest_enable</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>dbnest_pdb_fs_conf</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>dbwr_io_slaves</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>ddl_lock_timeout</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>debug_log_max_size</td>
+            <td>1048576000</td>
+            <td>1048576000</td>
+        </tr>
+        <tr class="match">
+            <td>default_credential</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>default_sharing</td>
+            <td>metadata</td>
+            <td>metadata</td>
+        </tr>
+        <tr class="match">
+            <td>deferred_segment_creation</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>dg_broker_config_file1</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/dr1FREE.dat</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/dr1FREE.dat</td>
+        </tr>
+        <tr class="match">
+            <td>dg_broker_config_file2</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/dr2FREE.dat</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/dr2FREE.dat</td>
+        </tr>
+        <tr class="match">
+            <td>dg_broker_start</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>diagnostic_dest</td>
+            <td>/opt/oracle</td>
+            <td>/opt/oracle</td>
+        </tr>
+        <tr class="match">
+            <td>diagnostics_control</td>
+            <td>IGNORE</td>
+            <td>IGNORE</td>
+        </tr>
+        <tr class="match">
+            <td>directory_prefixes_allowed</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>disable_pdb_feature</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>disk_asynch_io</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>dispatchers</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+            <td>(PROTOCOL=TCP) (SERVICE=FREEXDB)</td>
+        </tr>
+        <tr class="match">
+            <td>distributed_lock_timeout</td>
+            <td>60</td>
+            <td>60</td>
+        </tr>
+        <tr class="match">
+            <td>dml_locks</td>
+            <td>1416</td>
+            <td>1416</td>
+        </tr>
+        <tr class="match">
+            <td>dnfs_batch_size</td>
+            <td>4096</td>
+            <td>4096</td>
+        </tr>
+        <tr class="match">
+            <td>drcp_connection_limit</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>drcp_dedicated_opt</td>
+            <td>NO</td>
+            <td>NO</td>
+        </tr>
+        <tr class="match">
+            <td>dst_upgrade_insert_conv</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_automatic_maintenance_pdb</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_ddl_logging</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_dnfs_dispatcher</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_goldengate_replication</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_imc_with_mira</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_per_pdb_drcp</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>enable_pluggable_database</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>enabled_PDBs_on_standby</td>
+            <td>*</td>
+            <td>*</td>
+        </tr>
+        <tr class="match">
+            <td>encrypt_new_tablespaces</td>
+            <td>CLOUD_ONLY</td>
+            <td>CLOUD_ONLY</td>
+        </tr>
+        <tr class="match">
+            <td>error_message_details</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>event</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>external_keystore_credential_location</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>fal_client</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>fal_server</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>fast_start_io_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>fast_start_mttr_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>fast_start_parallel_rollback</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>file_mapping</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>fileio_network_adapters</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>filesystemio_options</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr class="match">
+            <td>fixed_date</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>forward_listener</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>gcs_server_processes</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>global_names</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>global_txn_processes</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>group_by_position_enabled</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>hash_area_size</td>
+            <td>131072</td>
+            <td>131072</td>
+        </tr>
+        <tr class="match">
+            <td>heartbeat_batch_size</td>
+            <td>5</td>
+            <td>5</td>
+        </tr>
+        <tr class="match">
+            <td>heat_map</td>
+            <td>OFF</td>
+            <td>OFF</td>
+        </tr>
+        <tr class="match">
+            <td>hi_shared_memory_address</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>hs_autoregister</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>http_proxy</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>hybrid_read_only</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>identity_provider_config</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>identity_provider_type</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>ifile</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>ignore_session_set_param_errors</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_adg_enabled</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_automatic_level</td>
+            <td>OFF</td>
+            <td>OFF</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_clause_default</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_deep_vectorization</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_expressions_usage</td>
+            <td>ENABLE</td>
+            <td>ENABLE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_force</td>
+            <td>DEFAULT</td>
+            <td>DEFAULT</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_graph_algorithm_execution</td>
+            <td>DEFAULT</td>
+            <td>DEFAULT</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_max_populate_servers</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_optimized_arithmetic</td>
+            <td>DISABLE</td>
+            <td>DISABLE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_optimized_date</td>
+            <td>DISABLE</td>
+            <td>DISABLE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_prefer_xmem_memcompress</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_prefer_xmem_priority</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_query</td>
+            <td>ENABLE</td>
+            <td>ENABLE</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_trickle_repopulate_servers_percent</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_virtual_columns</td>
+            <td>MANUAL</td>
+            <td>MANUAL</td>
+        </tr>
+        <tr class="match">
+            <td>inmemory_xmem_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>instance_abort_delay_time</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>instance_groups</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>instance_mode</td>
+            <td>READ-WRITE</td>
+            <td>READ-WRITE</td>
+        </tr>
+        <tr class="match">
+            <td>instance_name</td>
+            <td>FREE</td>
+            <td>FREE</td>
+        </tr>
+        <tr class="match">
+            <td>instance_number</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>instance_type</td>
+            <td>RDBMS</td>
+            <td>RDBMS</td>
+        </tr>
+        <tr class="match">
+            <td>instant_restore</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>iorm_limit_policy</td>
+            <td>RM_PLAN</td>
+            <td>RM_PLAN</td>
+        </tr>
+        <tr class="match">
+            <td>ipddb_enable</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>java_jit_enabled</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>java_max_sessionspace_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>java_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>java_restrict</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr class="match">
+            <td>java_soft_sessionspace_limit</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>job_queue_processes</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr class="match">
+            <td>json_behavior</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>json_expression_check</td>
+            <td>off</td>
+            <td>off</td>
+        </tr>
+        <tr class="match">
+            <td>kafka_config_file</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>large_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>ldap_directory_access</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>ldap_directory_sysauth</td>
+            <td>no</td>
+            <td>no</td>
+        </tr>
+        <tr class="match">
+            <td>license_max_sessions</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>license_max_users</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>license_sessions_warning</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>listener_networks</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>load_without_compile</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr class="match">
+            <td>lob_signature_enable</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>local_listener</td>
+            <td>LISTENER_FREE</td>
+            <td>LISTENER_FREE</td>
+        </tr>
+        <tr class="match">
+            <td>lock_name_space</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>lock_sga</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>lockdown_errors</td>
+            <td>RAISE</td>
+            <td>RAISE</td>
+        </tr>
+        <tr class="match">
+            <td>lockfree_reservation</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_config</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_1</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_10</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_11</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_12</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_13</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_14</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_15</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_16</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_17</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_18</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_19</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_2</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_20</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_21</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_22</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_23</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_24</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_25</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_26</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_27</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_28</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_29</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_3</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_30</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_31</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_4</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_5</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_6</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_7</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_8</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_9</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_1</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_10</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_11</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_12</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_13</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_14</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_15</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_16</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_17</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_18</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_19</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_2</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_20</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_21</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_22</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_23</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_24</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_25</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_26</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_27</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_28</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_29</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_3</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_30</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_31</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_4</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_5</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_6</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_7</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_8</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_dest_state_9</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_duplex_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_format</td>
+            <td>%t_%s_%r.dbf</td>
+            <td>%t_%s_%r.dbf</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_max_processes</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_min_succeed_dest</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>log_archive_trace</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>log_buffer</td>
+            <td>4292608</td>
+            <td>4292608</td>
+        </tr>
+        <tr class="match">
+            <td>log_checkpoint_interval</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>log_checkpoint_timeout</td>
+            <td>1800</td>
+            <td>1800</td>
+        </tr>
+        <tr class="match">
+            <td>log_checkpoints_to_alert</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>log_file_name_convert</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>long_module_action</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>main_workload_type</td>
+            <td>OLTP</td>
+            <td>OLTP</td>
+        </tr>
+        <tr class="match">
+            <td>mandatory_user_profile</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>max_auth_servers</td>
+            <td>25</td>
+            <td>25</td>
+        </tr>
+        <tr class="match">
+            <td>max_columns</td>
+            <td>STANDARD</td>
+            <td>STANDARD</td>
+        </tr>
+        <tr class="match">
+            <td>max_datapump_jobs_per_pdb</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>max_datapump_parallel_per_job</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>max_dispatchers</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>max_dump_file_size</td>
+            <td>32M</td>
+            <td>32M</td>
+        </tr>
+        <tr class="match">
+            <td>max_idle_blocker_time</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>max_idle_time</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>max_iops</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>max_mbps</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>max_pdbs</td>
+            <td>18</td>
+            <td>18</td>
+        </tr>
+        <tr class="match">
+            <td>max_saga_duration</td>
+            <td>86400</td>
+            <td>86400</td>
+        </tr>
+        <tr class="match">
+            <td>max_shared_servers</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>max_string_size</td>
+            <td>STANDARD</td>
+            <td>STANDARD</td>
+        </tr>
+        <tr class="match">
+            <td>memoptimize_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>memoptimize_write_area_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>memoptimize_writes</td>
+            <td>HINT</td>
+            <td>HINT</td>
+        </tr>
+        <tr class="match">
+            <td>memory_max_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>memory_max_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>memory_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>memory_target</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_duo_api_host</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_oma_iam_domain_url</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_sender_email_displayname</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_sender_email_id</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_smtp_host</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>mfa_smtp_port</td>
+            <td>587</td>
+            <td>587</td>
+        </tr>
+        <tr class="match">
+            <td>min_auth_servers</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>mle_prog_languages</td>
+            <td>all</td>
+            <td>all</td>
+        </tr>
+        <tr class="match">
+            <td>multishard_query_data_consistency</td>
+            <td>strong</td>
+            <td>strong</td>
+        </tr>
+        <tr class="match">
+            <td>multishard_query_partial_results</td>
+            <td>not allowed</td>
+            <td>not allowed</td>
+        </tr>
+        <tr class="match">
+            <td>native_blockchain_features</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>nls_calendar</td>
+            <td>GREGORIAN</td>
+            <td>GREGORIAN</td>
+        </tr>
+        <tr class="match">
+            <td>nls_comp</td>
+            <td>BINARY</td>
+            <td>BINARY</td>
+        </tr>
+        <tr class="match">
+            <td>nls_currency</td>
+            <td>$</td>
+            <td>$</td>
+        </tr>
+        <tr class="match">
+            <td>nls_date_format</td>
+            <td>DD-MON-RR</td>
+            <td>DD-MON-RR</td>
+        </tr>
+        <tr class="match">
+            <td>nls_date_language</td>
+            <td>AMERICAN</td>
+            <td>AMERICAN</td>
+        </tr>
+        <tr class="match">
+            <td>nls_dual_currency</td>
+            <td>$</td>
+            <td>$</td>
+        </tr>
+        <tr class="match">
+            <td>nls_iso_currency</td>
+            <td>AMERICA</td>
+            <td>AMERICA</td>
+        </tr>
+        <tr class="match">
+            <td>nls_language</td>
+            <td>AMERICAN</td>
+            <td>AMERICAN</td>
+        </tr>
+        <tr class="match">
+            <td>nls_length_semantics</td>
+            <td>BYTE</td>
+            <td>BYTE</td>
+        </tr>
+        <tr class="match">
+            <td>nls_nchar_conv_excp</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>nls_numeric_characters</td>
+            <td>.,</td>
+            <td>.,</td>
+        </tr>
+        <tr class="match">
+            <td>nls_sort</td>
+            <td>BINARY</td>
+            <td>BINARY</td>
+        </tr>
+        <tr class="match">
+            <td>nls_territory</td>
+            <td>AMERICA</td>
+            <td>AMERICA</td>
+        </tr>
+        <tr class="match">
+            <td>nls_time_format</td>
+            <td>HH.MI.SSXFF AM</td>
+            <td>HH.MI.SSXFF AM</td>
+        </tr>
+        <tr class="match">
+            <td>nls_time_tz_format</td>
+            <td>HH.MI.SSXFF AM TZR</td>
+            <td>HH.MI.SSXFF AM TZR</td>
+        </tr>
+        <tr class="match">
+            <td>nls_timestamp_format</td>
+            <td>DD-MON-RR HH.MI.SSXFF AM</td>
+            <td>DD-MON-RR HH.MI.SSXFF AM</td>
+        </tr>
+        <tr class="match">
+            <td>nls_timestamp_tz_format</td>
+            <td>DD-MON-RR HH.MI.SSXFF AM TZR</td>
+            <td>DD-MON-RR HH.MI.SSXFF AM TZR</td>
+        </tr>
+        <tr class="match">
+            <td>noncdb_compatible</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>object_cache_max_size_percent</td>
+            <td>10</td>
+            <td>10</td>
+        </tr>
+        <tr class="match">
+            <td>object_cache_optimal_size</td>
+            <td>51200000</td>
+            <td>51200000</td>
+        </tr>
+        <tr class="match">
+            <td>ofs_threads</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr class="match">
+            <td>olap_page_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>one_step_plugin_for_pdb_with_tde</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>open_cursors</td>
+            <td>300</td>
+            <td>300</td>
+        </tr>
+        <tr class="match">
+            <td>open_links</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr class="match">
+            <td>open_links_per_instance</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_adaptive_plans</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_adaptive_reporting_only</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_adaptive_statistics</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_capture_sql_plan_baselines</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_capture_sql_quarantine</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_cross_shard_resiliency</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_dynamic_sampling</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_features_enable</td>
+            <td>23.1.0</td>
+            <td>23.1.0</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_ignore_hints</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_ignore_parallel_hints</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_index_caching</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_index_cost_adj</td>
+            <td>100</td>
+            <td>100</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_inmemory_aware</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_mode</td>
+            <td>ALL_ROWS</td>
+            <td>ALL_ROWS</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_real_time_statistics</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_secure_view_merging</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_session_type</td>
+            <td>NORMAL</td>
+            <td>NORMAL</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_use_invisible_indexes</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_use_pending_statistics</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_use_sql_plan_baselines</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>optimizer_use_sql_quarantine</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>os_authent_prefix</td>
+            <td>ops$</td>
+            <td>ops$</td>
+        </tr>
+        <tr class="match">
+            <td>os_roles</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>outbound_dblink_protocols</td>
+            <td>ALL</td>
+            <td>ALL</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_adaptive_multi_user</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_degree_limit</td>
+            <td>CPU</td>
+            <td>CPU</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_degree_policy</td>
+            <td>MANUAL</td>
+            <td>MANUAL</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_execution_message_size</td>
+            <td>16384</td>
+            <td>16384</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_force_local</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_instance_group</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_max_servers</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_min_degree</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_min_percent</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_min_servers</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_min_time_threshold</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_servers_target</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>parallel_threads_per_cpu</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>paranoid_concurrency_mode</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>pdb_file_name_convert</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>pdb_lockdown</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>pdb_os_credential</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>pdb_template</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>pdc_file_size</td>
+            <td>2101248</td>
+            <td>2101248</td>
+        </tr>
+        <tr class="match">
+            <td>permit_92_wrap_format</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>pga_aggregate_limit</td>
+            <td>2147483648</td>
+            <td>2147483648</td>
+        </tr>
+        <tr class="match">
+            <td>pga_aggregate_target</td>
+            <td>536870912</td>
+            <td>536870912</td>
+        </tr>
+        <tr class="match">
+            <td>pkcs11_library_location</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>plscope_settings</td>
+            <td>IDENTIFIERS:NONE</td>
+            <td>IDENTIFIERS:NONE</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_ccflags</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_code_type</td>
+            <td>INTERPRETED</td>
+            <td>INTERPRETED</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_debug</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_function_dynamic_stats</td>
+            <td>PREFERENCE</td>
+            <td>PREFERENCE</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_implicit_conversion_bool</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_optimize_level</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_v2_compatibility</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>plsql_warnings</td>
+            <td>DISABLE:ALL</td>
+            <td>DISABLE:ALL</td>
+        </tr>
+        <tr class="match">
+            <td>pmem_filestore</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>pre_page_sga</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>priority_txns_high_wait_target</td>
+            <td>2147483647</td>
+            <td>2147483647</td>
+        </tr>
+        <tr class="match">
+            <td>priority_txns_medium_wait_target</td>
+            <td>2147483647</td>
+            <td>2147483647</td>
+        </tr>
+        <tr class="match">
+            <td>priority_txns_mode</td>
+            <td>ROLLBACK</td>
+            <td>ROLLBACK</td>
+        </tr>
+        <tr class="match">
+            <td>private_temp_table_prefix</td>
+            <td>ORA$PTT_</td>
+            <td>ORA$PTT_</td>
+        </tr>
+        <tr class="match">
+            <td>processes</td>
+            <td>200</td>
+            <td>200</td>
+        </tr>
+        <tr class="match">
+            <td>processor_group_name</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>query_rewrite_enabled</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>query_rewrite_integrity</td>
+            <td>enforced</td>
+            <td>enforced</td>
+        </tr>
+        <tr class="match">
+            <td>rdbms_server_dn</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>read_only</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>read_only_open_delayed</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>recovery_parallelism</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>recyclebin</td>
+            <td>on</td>
+            <td>on</td>
+        </tr>
+        <tr class="match">
+            <td>redo_transport_user</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>remote_dependencies_mode</td>
+            <td>TIMESTAMP</td>
+            <td>TIMESTAMP</td>
+        </tr>
+        <tr class="match">
+            <td>remote_listener</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>remote_login_passwordfile</td>
+            <td>EXCLUSIVE</td>
+            <td>EXCLUSIVE</td>
+        </tr>
+        <tr class="match">
+            <td>remote_os_roles</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>remote_recovery_file_dest</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>replication_dependency_tracking</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>resource_limit</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>resource_manage_goldengate</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>resource_manager_cpu_allocation</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>resource_manager_cpu_scope</td>
+            <td>INSTANCE_ONLY</td>
+            <td>INSTANCE_ONLY</td>
+        </tr>
+        <tr class="match">
+            <td>resource_manager_plan</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_auto_blocklist</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_execution_threshold</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_integrity</td>
+            <td>TRUSTED</td>
+            <td>TRUSTED</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_max_result</td>
+            <td>5</td>
+            <td>5</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_max_size</td>
+            <td>8126464</td>
+            <td>8126464</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_max_temp_result</td>
+            <td>5</td>
+            <td>5</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_max_temp_size</td>
+            <td>81264640</td>
+            <td>81264640</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_mode</td>
+            <td>MANUAL</td>
+            <td>MANUAL</td>
+        </tr>
+        <tr class="match">
+            <td>result_cache_remote_expiration</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>resumable_timeout</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>rman_restore_file_storage_metadata</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>rollback_segments</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>run_addm_for_awr_report</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>saga_hist_retention</td>
+            <td>43200</td>
+            <td>43200</td>
+        </tr>
+        <tr class="match">
+            <td>scheduler_follow_pdbtz</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>sec_max_failed_login_attempts</td>
+            <td>3</td>
+            <td>3</td>
+        </tr>
+        <tr class="match">
+            <td>sec_protocol_error_further_action</td>
+            <td>(DROP,3)</td>
+            <td>(DROP,3)</td>
+        </tr>
+        <tr class="match">
+            <td>sec_protocol_error_trace_action</td>
+            <td>TRACE</td>
+            <td>TRACE</td>
+        </tr>
+        <tr class="match">
+            <td>sec_return_server_release_banner</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>serial_reuse</td>
+            <td>disable</td>
+            <td>disable</td>
+        </tr>
+        <tr class="match">
+            <td>service_names</td>
+            <td>FREE</td>
+            <td>FREE</td>
+        </tr>
+        <tr class="match">
+            <td>session_cached_cursors</td>
+            <td>50</td>
+            <td>50</td>
+        </tr>
+        <tr class="match">
+            <td>session_exit_on_package_state_error</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>session_max_open_files</td>
+            <td>10</td>
+            <td>10</td>
+        </tr>
+        <tr class="match">
+            <td>sessions</td>
+            <td>322</td>
+            <td>322</td>
+        </tr>
+        <tr class="match">
+            <td>sga_max_size</td>
+            <td>1610612736</td>
+            <td>1610612736</td>
+        </tr>
+        <tr class="match">
+            <td>sga_min_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>sga_target</td>
+            <td>1610612736</td>
+            <td>1610612736</td>
+        </tr>
+        <tr class="match">
+            <td>shadow_core_dump</td>
+            <td>partial</td>
+            <td>partial</td>
+        </tr>
+        <tr class="match">
+            <td>shard_apply_max_memory_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>shard_enable_raft_follower_read</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>shard_queries_restricted_by_key</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>shard_raft_logfile_size</td>
+            <td>1073741824</td>
+            <td>1073741824</td>
+        </tr>
+        <tr class="match">
+            <td>shared_memory_address</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="diff">
+            <td>shared_pool_reserved_size</td>
+            <td>28185722</td>
+            <td>34057748</td>
+        </tr>
+        <tr class="match">
+            <td>shared_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>shared_server_sessions</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>shared_servers</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr class="match">
+            <td>shrd_dupl_table_refresh_rate</td>
+            <td>60</td>
+            <td>60</td>
+        </tr>
+        <tr class="match">
+            <td>skip_unusable_indexes</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>smtp_out_server</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>soda_behavior</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>sort_area_retained_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>sort_area_size</td>
+            <td>65536</td>
+            <td>65536</td>
+        </tr>
+        <tr class="match">
+            <td>spatial_vector_acceleration</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>spfile</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/spfileFREE.ora</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/dbs/spfileFREE.ora</td>
+        </tr>
+        <tr class="match">
+            <td>sql92_security</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>sql_error_mitigation</td>
+            <td>on</td>
+            <td>on</td>
+        </tr>
+        <tr class="match">
+            <td>sql_history_enabled</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>sql_trace</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>sql_transpiler</td>
+            <td>OFF</td>
+            <td>OFF</td>
+        </tr>
+        <tr class="match">
+            <td>sqltune_category</td>
+            <td>DEFAULT</td>
+            <td>DEFAULT</td>
+        </tr>
+        <tr class="match">
+            <td>ssl_wallet</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>standby_db_preserve_states</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>standby_file_management</td>
+            <td>MANUAL</td>
+            <td>MANUAL</td>
+        </tr>
+        <tr class="match">
+            <td>standby_pdb_source_file_dblink</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>standby_pdb_source_file_directory</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>star_transformation_enabled</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>statement_redirect_service</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>statistics_level</td>
+            <td>TYPICAL</td>
+            <td>TYPICAL</td>
+        </tr>
+        <tr class="match">
+            <td>streams_pool_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>sysdate_at_dbtimezone</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>tablespace_encryption</td>
+            <td>MANUAL_ENABLE</td>
+            <td>MANUAL_ENABLE</td>
+        </tr>
+        <tr class="match">
+            <td>tablespace_encryption_default_algorithm</td>
+            <td>AES256</td>
+            <td>AES256</td>
+        </tr>
+        <tr class="match">
+            <td>tablespace_encryption_default_cipher_mode</td>
+            <td>XTS</td>
+            <td>XTS</td>
+        </tr>
+        <tr class="match">
+            <td>tape_asynch_io</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>target_pdbs</td>
+            <td>3</td>
+            <td>3</td>
+        </tr>
+        <tr class="match">
+            <td>tde_configuration</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>tde_key_cache</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>temp_undo_enabled</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>thread</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>threaded_execution</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>time_at_dbtimezone</td>
+            <td>off</td>
+            <td>off</td>
+        </tr>
+        <tr class="match">
+            <td>timed_os_statistics</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>timed_statistics</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>timezone_version_upgrade_integrity</td>
+            <td>enforced</td>
+            <td>enforced</td>
+        </tr>
+        <tr class="match">
+            <td>timezone_version_upgrade_online</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>trace_enabled</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>tracefile_content_classification</td>
+            <td>DEFAULT</td>
+            <td>DEFAULT</td>
+        </tr>
+        <tr class="match">
+            <td>tracefile_identifier</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>transaction_recovery</td>
+            <td>ENABLED</td>
+            <td>ENABLED</td>
+        </tr>
+        <tr class="match">
+            <td>transactions</td>
+            <td>354</td>
+            <td>354</td>
+        </tr>
+        <tr class="match">
+            <td>transactions_per_rollback_segment</td>
+            <td>5</td>
+            <td>5</td>
+        </tr>
+        <tr class="match">
+            <td>true_cache</td>
+            <td>FALSE</td>
+            <td>FALSE</td>
+        </tr>
+        <tr class="match">
+            <td>true_cache_config</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>txn_auto_rollback_high_priority_wait_target</td>
+            <td>2147483647</td>
+            <td>2147483647</td>
+        </tr>
+        <tr class="match">
+            <td>txn_auto_rollback_medium_priority_wait_target</td>
+            <td>2147483647</td>
+            <td>2147483647</td>
+        </tr>
+        <tr class="match">
+            <td>txn_auto_rollback_mode</td>
+            <td>ROLLBACK</td>
+            <td>ROLLBACK</td>
+        </tr>
+        <tr class="match">
+            <td>txn_priority</td>
+            <td>HIGH</td>
+            <td>HIGH</td>
+        </tr>
+        <tr class="match">
+            <td>undo_management</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>undo_retention</td>
+            <td>900</td>
+            <td>900</td>
+        </tr>
+        <tr class="match">
+            <td>undo_tablespace</td>
+            <td>UNDOTBS1</td>
+            <td>UNDOTBS1</td>
+        </tr>
+        <tr class="match">
+            <td>unified_audit_common_systemlog</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>unified_audit_systemlog</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>unified_audit_trail_exclude_columns</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>uniform_log_timestamp_format</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>use_dedicated_broker</td>
+            <td>NONE</td>
+            <td>NONE</td>
+        </tr>
+        <tr class="match">
+            <td>use_large_pages</td>
+            <td>TRUE</td>
+            <td>TRUE</td>
+        </tr>
+        <tr class="match">
+            <td>user_dump_dest</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/log</td>
+            <td>/opt/oracle/product/26ai/dbhomeFree/rdbms/log</td>
+        </tr>
+        <tr class="match">
+            <td>vector_index_neighbor_graph_reload</td>
+            <td>RESTART</td>
+            <td>RESTART</td>
+        </tr>
+        <tr class="match">
+            <td>vector_memory_size</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr class="match">
+            <td>vector_query_capture</td>
+            <td>ON</td>
+            <td>ON</td>
+        </tr>
+        <tr class="match">
+            <td>wallet_root</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+        <tr class="match">
+            <td>workarea_size_policy</td>
+            <td>AUTO</td>
+            <td>AUTO</td>
+        </tr>
+        <tr class="match">
+            <td>xml_client_side_decoding</td>
+            <td>true</td>
+            <td>true</td>
+        </tr>
+        <tr class="match">
+            <td>xml_db_events</td>
+            <td>enable</td>
+            <td>enable</td>
+        </tr>
+        <tr class="match">
+            <td>xml_handling_of_invalid_chars</td>
+            <td>raise_error</td>
+            <td>raise_error</td>
+        </tr>
+        <tr class="match">
+            <td>xml_params</td>
+            <td>None</td>
+            <td>None</td>
+        </tr>
+
+    </table>
+
+    <div class="footer">
+        <p>Generated by Oracle PDB Management Toolkit</p>
+    </div>
+</body>
+</html>
