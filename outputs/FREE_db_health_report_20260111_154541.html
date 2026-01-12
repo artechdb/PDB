@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Health Check Report</title>
+    <link rel="stylesheet" href="../report_styles.css">
+</head>
+<body>
+    <h1>Oracle Database Health Check Report</h1>
+    <div class="timestamp">Generated: 2026-01-11 15:45:41</div>
+
+    <h2>Database Information</h2>
+    <div class="info-box">
+        <p><strong>Database Name:</strong> FREE</p>
+        <p><strong>Open Mode:</strong> READ WRITE</p>
+        <p><strong>Role:</strong> PRIMARY</p>
+        <p><strong>Version:</strong> Oracle AI Database 26ai Free Release 23.26.0.0.0 - Develop, Learn, and Run for Free</p>
+        <p><strong>Instance 1:</strong> FREE @ rac1</p>
+        <p><strong>Database Size:</strong> 0.9 GB</p>
+        <p><strong>MAX_PDB_STORAGE:</strong> UNLIMITED</p>
+
+    </div>
+
+    <h2>Session Statistics</h2>
+    <table>
+        <tr><th>Status</th><th>Count</th></tr>
+        <tr><td>ACTIVE</td><td>69</td></tr>
+        <tr><td>INACTIVE</td><td>1</td></tr>
+
+    </table>
+
+    <h2>Tablespace Usage</h2>
+    <table>
+        <tr><th>Tablespace</th><th>Used (GB)</th><th>Total (GB)</th><th>% Used</th></tr>
+        <tr><td>SYSTEM</td><td>1.03</td><td>8.22</td><td>12.48%</td></tr>
+        <tr><td>SYSAUX</td><td>0.7</td><td>7.93</td><td>8.86%</td></tr>
+        <tr><td>USERS</td><td>0.01</td><td>7.19</td><td>0.08%</td></tr>
+        <tr><td>UNDOTBS1</td><td>0.03</td><td>32768</td><td>0%</td></tr>
+        <tr><td>TEMP</td><td>0</td><td>7.2</td><td>0%</td></tr>
+
+    </table>
+
+    <h2>Pluggable Databases</h2>
+    <table>
+        <tr><th>PDB Name</th><th>Open Mode</th><th>Restricted</th><th>Open Time</th><th>Size (GB)</th></tr>
+        <tr><td>FREEPDB1</td><td>READ WRITE</td><td>NO</td><td>2026-01-10 02:05:06</td><td>0.92</td></tr>
+        <tr><td>PDB$SEED</td><td>READ ONLY</td><td>NO</td><td>2026-01-10 02:05:05</td><td>0.79</td></tr>
+
+    </table>
+
+    <h2>Top 10 Wait Events</h2>
+    <table>
+        <tr><th>Event</th><th>Total Waits</th><th>Time Waited (cs)</th><th>Avg Wait (cs)</th></tr>
+        <tr><td>log file parallel write</td><td>111800</td><td>22569</td><td>0.2</td></tr>
+        <tr><td>control file parallel write</td><td>57229</td><td>20622</td><td>0.36</td></tr>
+        <tr><td>oracle thread bootstrap</td><td>3109</td><td>18138</td><td>5.83</td></tr>
+        <tr><td>db file async I/O submit</td><td>61461</td><td>10483</td><td>0.17</td></tr>
+        <tr><td>resmgr:cpu quantum</td><td>527</td><td>4217</td><td>8</td></tr>
+        <tr><td>external table read</td><td>5</td><td>1763</td><td>352.53</td></tr>
+        <tr><td>db file sequential read</td><td>40707</td><td>1703</td><td>0.04</td></tr>
+        <tr><td>os thread creation</td><td>3115</td><td>1220</td><td>0.39</td></tr>
+        <tr><td>direct path write</td><td>4344</td><td>816</td><td>0.19</td></tr>
+        <tr><td>enq: KO - fast object checkpoint</td><td>959</td><td>681</td><td>0.71</td></tr>
+
+    </table>
+
+    <h2>Database Load (AAS - Last 5 Minutes)</h2>
+    <div class="info-box">
+        <p><strong>Average Active Sessions:</strong> <span class="fail">14.2</span> (CRITICAL)</p>
+        <p><em>AAS > 10 = CRITICAL, AAS > 5 = WARNING, AAS ≤ 5 = OK</em></p>
+    </div>
+
+    <h2>Top 10 SQL by CPU Time</h2>
+    <table>
+        <tr><th>SQL ID</th><th>CPU (Seconds)</th><th>Executions</th><th>CPU per Exec (s)</th></tr>
+        <tr><td>7qb74y7hp6cwd</td><td>18.37</td><td>282733</td><td>N/A</td></tr>
+        <tr><td>bcrs02p63dr3w</td><td>11.71</td><td>54854</td><td>N/A</td></tr>
+        <tr><td>a95n8p4vpxmps</td><td>10.99</td><td>19</td><td>0.58</td></tr>
+        <tr><td>62yyzw3309d6a</td><td>9.68</td><td>394308</td><td>N/A</td></tr>
+        <tr><td>00t1jxa7jzjh8</td><td>9.66</td><td>10086</td><td>N/A</td></tr>
+        <tr><td>5rurx5xtjwcu2</td><td>9.57</td><td>66386</td><td>N/A</td></tr>
+        <tr><td>00t1jxa7jzjh8</td><td>8.9</td><td>11264</td><td>N/A</td></tr>
+        <tr><td>5c4sr912n136n</td><td>8.87</td><td>280533</td><td>N/A</td></tr>
+        <tr><td>bqqm0jchyz1d6</td><td>8.19</td><td>11264</td><td>N/A</td></tr>
+        <tr><td>772s25v1y0x8k</td><td>7.86</td><td>4499</td><td>N/A</td></tr>
+    </table>
+
+    <h2>Top 10 SQL by Disk Reads</h2>
+    <table>
+        <tr><th>SQL ID</th><th>Disk Reads</th><th>Executions</th><th>Reads per Exec</th></tr>
+        <tr><td>6s5u856z926jv</td><td>63</td><td>2</td><td>31.5</td></tr>
+        <tr><td>c0agatqzq2jzr</td><td>34</td><td>3</td><td>11.33</td></tr>
+        <tr><td>6h3cwmunz5z8q</td><td>24</td><td>6191</td><td>N/A</td></tr>
+        <tr><td>a4n4ayr88dbhy</td><td>19</td><td>6191</td><td>N/A</td></tr>
+        <tr><td>cc58t2hkfpnaq</td><td>18</td><td>32</td><td>0.56</td></tr>
+        <tr><td>c3zymn7x3k6wy</td><td>12</td><td>233</td><td>0.05</td></tr>
+        <tr><td>dnw4gjpv5ssfr</td><td>10</td><td>1</td><td>10</td></tr>
+        <tr><td>g392shwjn48m7</td><td>9</td><td>1</td><td>9</td></tr>
+        <tr><td>00t1jxa7jzjh8</td><td>9</td><td>11264</td><td>N/A</td></tr>
+        <tr><td>0gwaa0289rasu</td><td>9</td><td>28837</td><td>N/A</td></tr>
+    </table>
+
+    <h2>Invalid Objects</h2>
+    <div class="info-box">
+        <p class="pass">✓ No invalid objects found</p>
+    </div>
+
+    <h2>Alert Log Errors (Last Hour)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No ORA- errors in alert log (last hour)</p>
+    </div>
+
+    <h2>Long Running Queries (> 5 Minutes)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No long-running queries detected</p>
+    </div>
+
+    <h2>Temporary Tablespace Usage</h2>
+    <table>
+        <tr><th>Tablespace</th><th>Used (GB)</th><th>Free (GB)</th><th>% Used</th></tr>
+        <tr class=''><td>TEMP</td><td>0.02</td><td>0.04</td><td>26.67%</td></tr>
+    </table>
+
+    <div class="footer">
+        <p>Generated by Oracle PDB Management Toolkit</p>
+    </div>
+</body>
+</html>

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python oracle_pdb_toolkit.py:*)"
+      "Bash(python oracle_pdb_toolkit.py:*)",
+      "Bash(ls:*)"
     ]
   }
 }

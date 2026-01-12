@@ -1,0 +1,250 @@
+# Oracle PDB Toolkit Configuration File
+# This file contains all application settings and defaults
+
+# Application Information
+application:
+  name: "Oracle PDB Management Toolkit"
+  version: "1.2.6"
+  description: "Comprehensive GUI application for Oracle Pluggable Database administration"
+
+# Oracle Client Configuration
+oracle_client:
+  # Thick mode is required for external authentication and database links
+  thick_mode: true
+
+  # Oracle Client library paths (tried in order on Windows)
+  windows_paths:
+    - "${ORACLE_HOME}"
+    - "${ORACLE_HOME}/bin"
+    - "C:/oracle/instantclient_19_8"
+    - "C:/oracle/instantclient_21_3"
+    - "C:/oracle/instantclient_23_3"
+    - "C:/instantclient_19_8"
+    - "C:/instantclient_21_3"
+    - "C:/instantclient_23_3"
+    - "C:/Users/user/Downloads/WINDOWS.X64_213000_client_home"
+    - "C:/Users/user/Downloads/WINDOWS.X64_213000_client_home/bin"
+
+  # Linux/Unix relies on LD_LIBRARY_PATH and auto-detection
+  unix_auto_detect: true
+
+# Database Connection Defaults
+connection:
+  # Default connection mode: 'external_auth' or 'user_pass'
+  default_mode: "external_auth"
+
+  # Default port for Oracle databases
+  default_port: 1521
+
+  # Connection timeout in seconds
+  timeout: 30
+
+  # Connection pool settings (if implemented)
+  pool:
+    min_connections: 1
+    max_connections: 5
+    increment: 1
+
+# Health Check Report Configuration
+health_check:
+  # Output directory for reports (relative to application directory)
+  output_dir: "."
+
+  # Report file naming pattern
+  # Available variables: {db_name}, {timestamp}
+  report_filename_pattern: "{db_name}_db_health_report_{timestamp}.html"
+
+  # Timestamp format for report filenames
+  timestamp_format: "%Y%m%d_%H%M%S"
+
+  # CSS file for report styling
+  css_file: "report_styles.css"
+
+  # Health check thresholds
+  thresholds:
+    # Tablespace usage warning threshold (percentage)
+    tablespace_warning: 80
+    tablespace_critical: 90
+
+    # Memory usage warning threshold (percentage)
+    memory_warning: 85
+    memory_critical: 95
+
+    # Session count thresholds
+    session_warning: 100
+    session_critical: 200
+
+    # Database size monitoring
+    db_size_warning_gb: 100
+    db_size_critical_gb: 200
+
+    # PDB storage percentage (of MAX_PDB_STORAGE)
+    pdb_storage_warning: 80
+    pdb_storage_critical: 90
+
+# PDB Clone Configuration
+pdb_clone:
+  # Output directory for clone validation reports
+  output_dir: "."
+
+  # Validation report filename pattern
+  # Available variables: {source_cdb}, {source_pdb}, {target_cdb}, {target_pdb}, {timestamp}
+  validation_report_pattern: "{source_cdb}_{source_pdb}_{target_cdb}_{target_pdb}_pdb_validation_report_{timestamp}.html"
+
+  # Post-check report filename pattern
+  postcheck_report_pattern: "{source_cdb}_{source_pdb}_{target_cdb}_{target_pdb}_pdb_postcheck_report_{timestamp}.html"
+
+  # Clone operation settings
+  clone:
+    # Default storage clause (empty for unlimited)
+    default_storage: ""
+
+    # File name conversion template
+    file_name_convert: true
+
+    # Path substitution (if needed)
+    path_substitutions: []
+
+  # Pre-check validations
+  precheck:
+    # Minimum required checks
+    required_checks:
+      - "Source PDB Status"
+      - "Target CDB Status"
+      - "DB Link Status"
+      - "Tablespace Compatibility"
+      - "MAX_PDB_STORAGE Limit"
+
+    # Optional checks (warnings)
+    optional_checks:
+      - "Target PDB Exists"
+      - "Temp Tablespace Compatibility"
+
+# Logging Configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+
+  # Log output directory
+  output_dir: "logs"
+
+  # Log filename pattern
+  log_filename_pattern: "oracle_pdb_toolkit_{date}.log"
+
+  # Date format for log filenames
+  date_format: "%Y%m%d"
+
+  # Maximum log file size (MB)
+  max_file_size_mb: 10
+
+  # Number of backup log files to keep
+  backup_count: 5
+
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_time_format: "%Y-%m-%d %H:%M:%S"
+
+# GUI Settings
+gui:
+  # Main window settings
+  window:
+    title: "Oracle PDB Management Toolkit"
+    min_width: 800
+    min_height: 600
+
+  # Font settings
+  fonts:
+    default_family: "Segoe UI"
+    default_size: 9
+    header_size: 10
+    title_size: 12
+
+  # Tab configuration
+  tabs:
+    - name: "DB Health Check"
+      enabled: true
+    - name: "PDB Clone"
+      enabled: true
+
+  # Button labels
+  buttons:
+    health_check: "Generate Health Report"
+    pdb_precheck: "Run Pre-Check Validation"
+    pdb_clone: "Execute PDB Clone"
+    pdb_postcheck: "Run Post-Check Validation"
+    cancel: "Cancel Operation"
+
+# Report Styling
+reports:
+  # HTML report styling
+  html:
+    # Use external CSS file
+    use_external_css: true
+    external_css_file: "report_styles.css"
+
+    # Table styling
+    table:
+      border: "1px solid #ddd"
+      cell_padding: "8px"
+      header_bg: "#4CAF50"
+      header_color: "white"
+      alternate_row_bg: "#f2f2f2"
+
+    # Status indicators
+    status_colors:
+      success: "#28a745"
+      warning: "#ffc107"
+      error: "#dc3545"
+      info: "#17a2b8"
+
+# Feature Flags
+features:
+  # Enable/disable specific features
+  health_check_enabled: true
+  pdb_clone_enabled: true
+  external_auth_enabled: true
+  user_pass_auth_enabled: true
+
+  # Advanced features
+  rac_support: true
+  data_guard_support: true
+  multitenant_support: true
+
+# Error Handling
+error_handling:
+  # Display detailed error messages
+  show_traceback: true
+
+  # Retry settings for failed connections
+  retry_attempts: 3
+  retry_delay_seconds: 2
+
+  # Email notifications (if configured)
+  email_notifications: false
+  admin_email: ""
+
+# Performance Settings
+performance:
+  # Background worker thread timeout (seconds)
+  worker_timeout: 300
+
+  # Query timeout (seconds)
+  query_timeout: 60
+
+  # Batch size for large operations
+  batch_size: 1000
+
+  # Enable query result caching
+  enable_caching: false
+
+# Security Settings
+security:
+  # Validate SSL certificates
+  validate_ssl: true
+
+  # Store passwords in memory only (never persist)
+  secure_password_handling: true
+
+  # Audit logging
+  audit_logging: false
+  audit_log_file: "logs/audit.log"

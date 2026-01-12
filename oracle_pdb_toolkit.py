@@ -260,6 +260,284 @@ class DatabaseWorker(QThread):
         """)
         health_data['wait_events'] = cursor.fetchall()
 
+        # Active sessions by service (from health_check.sh)
+        try:
+            cursor.execute("""
+                SELECT service_name,
+                       COUNT(CASE WHEN status = 'ACTIVE' THEN 1 END) as active_sessions,
+                       COUNT(CASE WHEN status = 'INACTIVE' THEN 1 END) as inactive_sessions,
+                       COUNT(*) as total_sessions
+                FROM gv$session
+                WHERE type = 'USER'
+                  AND service_name NOT IN ('SYS$BACKGROUND', 'SYS$USERS')
+                GROUP BY service_name
+                ORDER BY active_sessions DESC, total_sessions DESC
+            """)
+            health_data['service_sessions'] = cursor.fetchall()
+        except Exception:
+            health_data['service_sessions'] = []
+
+        # Database Load (AAS - Average Active Sessions)
+        try:
+            cursor.execute("""
+                SELECT ROUND(COUNT(*) / 5, 2) as aas
+                FROM gv$active_session_history
+                WHERE sample_time > SYSDATE - INTERVAL '5' MINUTE
+            """)
+            aas_result = cursor.fetchone()
+            health_data['aas'] = aas_result[0] if aas_result and aas_result[0] else 0
+        except Exception:
+            health_data['aas'] = 0
+
+        # Top SQL by CPU
+        try:
+            cursor.execute("""
+                SELECT sql_id,
+                       ROUND(cpu_time / 1000000, 2) as cpu_seconds,
+                       executions,
+                       ROUND(cpu_time / 1000000 / NULLIF(executions, 0), 2) as cpu_per_exec
+                FROM v$sql
+                WHERE cpu_time > 0
+                ORDER BY cpu_time DESC
+                FETCH FIRST 10 ROWS ONLY
+            """)
+            health_data['top_sql_cpu'] = cursor.fetchall()
+        except Exception:
+            health_data['top_sql_cpu'] = []
+
+        # Top SQL by Disk Reads
+        try:
+            cursor.execute("""
+                SELECT sql_id,
+                       disk_reads,
+                       executions,
+                       ROUND(disk_reads / NULLIF(executions, 0), 2) as reads_per_exec
+                FROM v$sql
+                WHERE disk_reads > 0
+                ORDER BY disk_reads DESC
+                FETCH FIRST 10 ROWS ONLY
+            """)
+            health_data['top_sql_disk'] = cursor.fetchall()
+        except Exception:
+            health_data['top_sql_disk'] = []
+
+        # Invalid Objects
+        try:
+            cursor.execute("""
+                SELECT owner,
+                       object_type,
+                       COUNT(*) as invalid_count
+                FROM dba_objects
+                WHERE status = 'INVALID'
+                  AND owner NOT IN ('SYS', 'SYSTEM', 'AUDSYS', 'LBACSYS', 'XDB')
+                GROUP BY owner, object_type
+                ORDER BY invalid_count DESC
+            """)
+            health_data['invalid_objects'] = cursor.fetchall()
+        except Exception:
+            health_data['invalid_objects'] = []
+
+        # Alert Log Errors (recent ORA- errors from alert log view if available)
+        try:
+            cursor.execute("""
+                SELECT TO_CHAR(originating_timestamp, 'YYYY-MM-DD HH24:MI:SS') as error_time,
+                       message_text
+                FROM v$diag_alert_ext
+                WHERE originating_timestamp > SYSDATE - 1/24
+                  AND message_text LIKE '%ORA-%'
+                ORDER BY originating_timestamp DESC
+                FETCH FIRST 20 ROWS ONLY
+            """)
+            health_data['alert_log_errors'] = cursor.fetchall()
+        except Exception:
+            health_data['alert_log_errors'] = []
+
+        # RAC-specific: Instance load distribution (if RAC)
+        try:
+            cursor.execute("""
+                SELECT inst_id,
+                       instance_name,
+                       ROUND(value / 1000000, 2) as db_time_seconds
+                FROM gv$sys_time_model
+                WHERE stat_name = 'DB time'
+                ORDER BY inst_id
+            """)
+            instance_load = cursor.fetchall()
+            if len(instance_load) > 1:  # Only add if RAC (multiple instances)
+                health_data['instance_load'] = instance_load
+            else:
+                health_data['instance_load'] = []
+        except Exception:
+            health_data['instance_load'] = []
+
+        # Long Running Queries (running > 5 minutes)
+        try:
+            cursor.execute("""
+                SELECT s.inst_id,
+                       s.sid,
+                       s.serial#,
+                       s.username,
+                       s.sql_id,
+                       ROUND((SYSDATE - s.sql_exec_start) * 24 * 60, 2) as elapsed_minutes,
+                       s.status
+                FROM gv$session s
+                WHERE s.status = 'ACTIVE'
+                  AND s.type = 'USER'
+                  AND s.sql_exec_start IS NOT NULL
+                  AND (SYSDATE - s.sql_exec_start) * 24 * 60 > 5
+                ORDER BY elapsed_minutes DESC
+            """)
+            health_data['long_queries'] = cursor.fetchall()
+        except Exception:
+            health_data['long_queries'] = []
+
+        # Temp Tablespace Usage
+        try:
+            cursor.execute("""
+                SELECT tablespace_name,
+                       ROUND(SUM(bytes_used) / 1024 / 1024 / 1024, 2) as used_gb,
+                       ROUND(SUM(bytes_free) / 1024 / 1024 / 1024, 2) as free_gb,
+                       ROUND(SUM(bytes_used) * 100 / NULLIF(SUM(bytes_used + bytes_free), 0), 2) as pct_used
+                FROM v$temp_space_header
+                GROUP BY tablespace_name
+                ORDER BY pct_used DESC
+            """)
+            health_data['temp_usage'] = cursor.fetchall()
+        except Exception:
+            health_data['temp_usage'] = []
+
+        # RAC-specific: Global Cache Waits (Top GC Events)
+        try:
+            cursor.execute("""
+                SELECT event,
+                       COUNT(*) as samples,
+                       ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER (), 2) as pct
+                FROM gv$active_session_history
+                WHERE event LIKE 'gc%'
+                  AND sample_time > SYSDATE - INTERVAL '1' HOUR
+                GROUP BY event
+                ORDER BY samples DESC
+                FETCH FIRST 10 ROWS ONLY
+            """)
+            gc_waits = cursor.fetchall()
+            if gc_waits and len(health_data.get('instances', [])) > 1:  # Only add if RAC
+                health_data['rac_gc_waits'] = gc_waits
+            else:
+                health_data['rac_gc_waits'] = []
+        except Exception:
+            health_data['rac_gc_waits'] = []
+
+        # RAC-specific: GC Waits by Instance
+        try:
+            cursor.execute("""
+                SELECT inst_id,
+                       event,
+                       COUNT(*) as wait_count
+                FROM gv$active_session_history
+                WHERE event LIKE 'gc%'
+                  AND sample_time > SYSDATE - INTERVAL '1' HOUR
+                GROUP BY inst_id, event
+                ORDER BY inst_id, wait_count DESC
+            """)
+            gc_waits_inst = cursor.fetchall()
+            if gc_waits_inst and len(health_data.get('instances', [])) > 1:
+                health_data['rac_gc_waits_by_instance'] = gc_waits_inst
+            else:
+                health_data['rac_gc_waits_by_instance'] = []
+        except Exception:
+            health_data['rac_gc_waits_by_instance'] = []
+
+        # RAC-specific: Interconnect Activity
+        try:
+            cursor.execute("""
+                SELECT inst_id,
+                       name,
+                       ROUND(value / 1024 / 1024, 2) as mb
+                FROM gv$sysstat
+                WHERE name IN (
+                    'gc current blocks received',
+                    'gc cr blocks received',
+                    'gc current blocks served',
+                    'gc cr blocks served'
+                )
+                ORDER BY inst_id, name
+            """)
+            interconnect = cursor.fetchall()
+            if interconnect and len(health_data.get('instances', [])) > 1:
+                health_data['rac_interconnect'] = interconnect
+            else:
+                health_data['rac_interconnect'] = []
+        except Exception:
+            health_data['rac_interconnect'] = []
+
+        # RAC-specific: GES Blocking Sessions
+        try:
+            cursor.execute("""
+                SELECT blocking_session,
+                       blocking_inst_id,
+                       COUNT(*) as blocks,
+                       TO_CHAR(MIN(sample_time), 'YYYY-MM-DD HH24:MI') as first_seen,
+                       TO_CHAR(MAX(sample_time), 'YYYY-MM-DD HH24:MI') as last_seen
+                FROM gv$active_session_history
+                WHERE blocking_session IS NOT NULL
+                  AND sample_time > SYSDATE - INTERVAL '1' HOUR
+                GROUP BY blocking_session, blocking_inst_id
+                ORDER BY blocks DESC
+                FETCH FIRST 10 ROWS ONLY
+            """)
+            ges_blocking = cursor.fetchall()
+            if ges_blocking and len(health_data.get('instances', [])) > 1:
+                health_data['rac_ges_blocking'] = ges_blocking
+            else:
+                health_data['rac_ges_blocking'] = []
+        except Exception:
+            health_data['rac_ges_blocking'] = []
+
+        # RAC-specific: CPU Utilization per Instance
+        try:
+            cursor.execute("""
+                WITH os_stat AS (
+                    SELECT inst_id,
+                           MAX(CASE WHEN stat_name = 'BUSY_TIME' THEN value END) as busy_time,
+                           MAX(CASE WHEN stat_name = 'IDLE_TIME' THEN value END) as idle_time
+                    FROM gv$osstat
+                    WHERE stat_name IN ('BUSY_TIME', 'IDLE_TIME')
+                    GROUP BY inst_id
+                )
+                SELECT inst_id,
+                       ROUND(busy_time / 100, 2) as cpu_busy_secs,
+                       ROUND((busy_time + idle_time) / 100, 2) as total_cpu_secs,
+                       ROUND((busy_time / NULLIF(busy_time + idle_time, 0)) * 100, 2) as cpu_util_pct
+                FROM os_stat
+                ORDER BY inst_id
+            """)
+            cpu_util = cursor.fetchall()
+            if cpu_util and len(health_data.get('instances', [])) > 1:
+                health_data['rac_cpu_util'] = cpu_util
+            else:
+                health_data['rac_cpu_util'] = []
+        except Exception:
+            health_data['rac_cpu_util'] = []
+
+        # RAC-specific: Global Enqueue Contention
+        try:
+            cursor.execute("""
+                SELECT event,
+                       COUNT(*) as samples
+                FROM gv$active_session_history
+                WHERE event LIKE 'ges%'
+                  AND sample_time > SYSDATE - INTERVAL '1' HOUR
+                GROUP BY event
+                ORDER BY samples DESC
+            """)
+            ges_contention = cursor.fetchall()
+            if ges_contention and len(health_data.get('instances', [])) > 1:
+                health_data['rac_ges_contention'] = ges_contention
+            else:
+                health_data['rac_ges_contention'] = []
+        except Exception:
+            health_data['rac_ges_contention'] = []
+
         cursor.close()
         connection.close()
 
@@ -1487,7 +1765,225 @@ class DatabaseWorker(QThread):
 
         html += """
     </table>
+"""
 
+        # Database Load (AAS)
+        aas = data.get('aas', 0)
+        if aas > 0:
+            aas_status = 'CRITICAL' if aas > 10 else ('WARNING' if aas > 5 else 'OK')
+            aas_class = 'fail' if aas > 10 else ('diff' if aas > 5 else 'pass')
+            html += f"""
+    <h2>Database Load (AAS - Last 5 Minutes)</h2>
+    <div class="info-box">
+        <p><strong>Average Active Sessions:</strong> <span class="{aas_class}">{aas}</span> ({aas_status})</p>
+        <p><em>AAS > 10 = CRITICAL, AAS > 5 = WARNING, AAS ≤ 5 = OK</em></p>
+    </div>
+"""
+
+        # Active Sessions by Service
+        service_sessions = data.get('service_sessions', [])
+        if service_sessions:
+            html += """
+    <h2>Active Sessions by Service</h2>
+    <table>
+        <tr><th>Service Name</th><th>Active</th><th>Inactive</th><th>Total</th></tr>
+"""
+            for service, active, inactive, total in service_sessions:
+                html += f"        <tr><td>{service}</td><td>{active}</td><td>{inactive}</td><td>{total}</td></tr>\n"
+            html += "    </table>\n"
+
+        # Top SQL by CPU
+        top_sql_cpu = data.get('top_sql_cpu', [])
+        if top_sql_cpu:
+            html += """
+    <h2>Top 10 SQL by CPU Time</h2>
+    <table>
+        <tr><th>SQL ID</th><th>CPU (Seconds)</th><th>Executions</th><th>CPU per Exec (s)</th></tr>
+"""
+            for sql_id, cpu_secs, execs, cpu_per_exec in top_sql_cpu:
+                html += f"        <tr><td>{sql_id}</td><td>{cpu_secs}</td><td>{execs}</td><td>{cpu_per_exec if cpu_per_exec else 'N/A'}</td></tr>\n"
+            html += "    </table>\n"
+
+        # Top SQL by Disk Reads
+        top_sql_disk = data.get('top_sql_disk', [])
+        if top_sql_disk:
+            html += """
+    <h2>Top 10 SQL by Disk Reads</h2>
+    <table>
+        <tr><th>SQL ID</th><th>Disk Reads</th><th>Executions</th><th>Reads per Exec</th></tr>
+"""
+            for sql_id, disk_reads, execs, reads_per_exec in top_sql_disk:
+                html += f"        <tr><td>{sql_id}</td><td>{disk_reads}</td><td>{execs}</td><td>{reads_per_exec if reads_per_exec else 'N/A'}</td></tr>\n"
+            html += "    </table>\n"
+
+        # Invalid Objects
+        invalid_objects = data.get('invalid_objects', [])
+        if invalid_objects:
+            html += """
+    <h2>Invalid Objects</h2>
+    <table>
+        <tr><th>Owner</th><th>Object Type</th><th>Count</th></tr>
+"""
+            for owner, obj_type, count in invalid_objects:
+                html += f"        <tr class='diff'><td>{owner}</td><td>{obj_type}</td><td>{count}</td></tr>\n"
+            html += "    </table>\n"
+        else:
+            html += """
+    <h2>Invalid Objects</h2>
+    <div class="info-box">
+        <p class="pass">✓ No invalid objects found</p>
+    </div>
+"""
+
+        # Alert Log Errors
+        alert_log_errors = data.get('alert_log_errors', [])
+        if alert_log_errors:
+            html += """
+    <h2>Alert Log Errors (Last Hour)</h2>
+    <table>
+        <tr><th>Error Time</th><th>Message</th></tr>
+"""
+            for error_time, message in alert_log_errors:
+                html += f"        <tr class='fail'><td>{error_time}</td><td>{message[:200]}</td></tr>\n"
+            html += "    </table>\n"
+        else:
+            html += """
+    <h2>Alert Log Errors (Last Hour)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No ORA- errors in alert log (last hour)</p>
+    </div>
+"""
+
+        # Long Running Queries
+        long_queries = data.get('long_queries', [])
+        if long_queries:
+            html += """
+    <h2>Long Running Queries (> 5 Minutes)</h2>
+    <table>
+        <tr><th>Instance</th><th>SID</th><th>Serial#</th><th>Username</th><th>SQL ID</th><th>Elapsed (min)</th><th>Status</th></tr>
+"""
+            for inst_id, sid, serial, username, sql_id, elapsed, status in long_queries:
+                html += f"        <tr class='diff'><td>{inst_id}</td><td>{sid}</td><td>{serial}</td><td>{username}</td><td>{sql_id}</td><td>{elapsed}</td><td>{status}</td></tr>\n"
+            html += "    </table>\n"
+        else:
+            html += """
+    <h2>Long Running Queries (> 5 Minutes)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No long-running queries detected</p>
+    </div>
+"""
+
+        # Temp Tablespace Usage
+        temp_usage = data.get('temp_usage', [])
+        if temp_usage:
+            html += """
+    <h2>Temporary Tablespace Usage</h2>
+    <table>
+        <tr><th>Tablespace</th><th>Used (GB)</th><th>Free (GB)</th><th>% Used</th></tr>
+"""
+            for ts_name, used_gb, free_gb, pct_used in temp_usage:
+                row_class = 'fail' if pct_used > 90 else ('diff' if pct_used > 75 else '')
+                html += f"        <tr class='{row_class}'><td>{ts_name}</td><td>{used_gb}</td><td>{free_gb}</td><td>{pct_used}%</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC Instance Load Distribution
+        instance_load = data.get('instance_load', [])
+        if instance_load:
+            html += """
+    <h2>RAC Instance Load Distribution</h2>
+    <table>
+        <tr><th>Instance ID</th><th>Instance Name</th><th>DB Time (Seconds)</th></tr>
+"""
+            for inst_id, inst_name, db_time in instance_load:
+                html += f"        <tr><td>{inst_id}</td><td>{inst_name}</td><td>{db_time}</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC Global Cache Waits
+        rac_gc_waits = data.get('rac_gc_waits', [])
+        if rac_gc_waits:
+            html += """
+    <h2>RAC: Global Cache Waits (Last Hour)</h2>
+    <table>
+        <tr><th>Event</th><th>Samples</th><th>% of Total</th></tr>
+"""
+            for event, samples, pct in rac_gc_waits:
+                row_class = 'fail' if samples > 100 else ''
+                html += f"        <tr class='{row_class}'><td>{event}</td><td>{samples}</td><td>{pct}%</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC GC Waits by Instance
+        rac_gc_waits_inst = data.get('rac_gc_waits_by_instance', [])
+        if rac_gc_waits_inst:
+            html += """
+    <h2>RAC: GC Waits by Instance (Last Hour)</h2>
+    <table>
+        <tr><th>Instance ID</th><th>Event</th><th>Wait Count</th></tr>
+"""
+            for inst_id, event, wait_count in rac_gc_waits_inst:
+                row_class = 'fail' if wait_count > 500 else ('diff' if wait_count > 200 else '')
+                html += f"        <tr class='{row_class}'><td>{inst_id}</td><td>{event}</td><td>{wait_count}</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC Interconnect Activity
+        rac_interconnect = data.get('rac_interconnect', [])
+        if rac_interconnect:
+            html += """
+    <h2>RAC: Interconnect Activity</h2>
+    <table>
+        <tr><th>Instance ID</th><th>Metric</th><th>MB</th></tr>
+"""
+            for inst_id, name, mb in rac_interconnect:
+                row_class = 'fail' if mb > 500 else ''
+                html += f"        <tr class='{row_class}'><td>{inst_id}</td><td>{name}</td><td>{mb}</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC GES Blocking Sessions
+        rac_ges_blocking = data.get('rac_ges_blocking', [])
+        if rac_ges_blocking:
+            html += """
+    <h2>RAC: GES Blocking Sessions (Last Hour)</h2>
+    <table>
+        <tr><th>Blocking Session</th><th>Blocking Instance</th><th>Blocks</th><th>First Seen</th><th>Last Seen</th></tr>
+"""
+            for blocking_sess, blocking_inst, blocks, first_seen, last_seen in rac_ges_blocking:
+                row_class = 'fail' if blocks > 20 else ''
+                html += f"        <tr class='{row_class}'><td>{blocking_sess}</td><td>{blocking_inst}</td><td>{blocks}</td><td>{first_seen}</td><td>{last_seen}</td></tr>\n"
+            html += "    </table>\n"
+        elif len(data.get('instances', [])) > 1:
+            html += """
+    <h2>RAC: GES Blocking Sessions (Last Hour)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No blocking sessions detected</p>
+    </div>
+"""
+
+        # RAC CPU Utilization per Instance
+        rac_cpu_util = data.get('rac_cpu_util', [])
+        if rac_cpu_util:
+            html += """
+    <h2>RAC: CPU Utilization per Instance</h2>
+    <table>
+        <tr><th>Instance ID</th><th>CPU Busy (secs)</th><th>Total CPU (secs)</th><th>CPU Util %</th></tr>
+"""
+            for inst_id, cpu_busy, total_cpu, cpu_pct in rac_cpu_util:
+                row_class = 'fail' if cpu_pct > 90 else ('diff' if cpu_pct > 75 else '')
+                html += f"        <tr class='{row_class}'><td>{inst_id}</td><td>{cpu_busy}</td><td>{total_cpu}</td><td>{cpu_pct}%</td></tr>\n"
+            html += "    </table>\n"
+
+        # RAC Global Enqueue Contention
+        rac_ges_contention = data.get('rac_ges_contention', [])
+        if rac_ges_contention:
+            html += """
+    <h2>RAC: Global Enqueue Contention (Last Hour)</h2>
+    <table>
+        <tr><th>Event</th><th>Samples</th></tr>
+"""
+            for event, samples in rac_ges_contention:
+                row_class = 'fail' if samples > 50 else ''
+                html += f"        <tr class='{row_class}'><td>{event}</td><td>{samples}</td></tr>\n"
+            html += "    </table>\n"
+
+        html += """
     <div class="footer">
         <p>Generated by Oracle PDB Management Toolkit</p>
     </div>
