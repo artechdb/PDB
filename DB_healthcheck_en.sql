@@ -1,4 +1,4 @@
--- | DATABASE : Oracle                                                          |
+e-- | DATABASE : Oracle                                                          |
 -- | FILE     : DB_healthcheck_lhr_v6.0.6_RO.sql                                |
 -- | CLASS    : Database Administration                                         |
 -- | PURPOSE  : This SQL script provides a detailed report (in HTML format) on  |
