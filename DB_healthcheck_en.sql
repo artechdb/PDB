@@ -75,8 +75,8 @@ prompt |------------------------------------------------------------------------
 prompt
 
 
-prompt Description：
-prompt Used to checkOracle 11gDatabase Indicators，Includes main DB parameters、Main Object Status、Storage Config、Database Performance(AWR、ASH、ADDM)、RMANBackup Status etc.。
+prompt Description:
+prompt Used to checkOracle 11gDatabase Indicators,Includes main DB parameters,Main Object Status,Storage Config,Database Performance(AWR,ASH,ADDM),RMANBackup Status etc..
 
 -- A schema for test:
 --ALTER USER MDSYS IDENTIFIED BY MDSYS;
@@ -93,7 +93,7 @@ prompt Used to checkOracle 11gDatabase Indicators，Includes main DB parameters�
 
 prompt 
 prompt +----------------------------------------------------------------------------+
-prompt Health check script execution lasts several minutes,Varies with database size。
+prompt Health check script execution lasts several minutes,Varies with database size.
 prompt Start Execution......
 prompt +----------------------------------------------------------------------------+
 prompt
@@ -137,10 +137,10 @@ COMMIT;
 
 prompt
 
-host echo '-----Oracle Database  Check STRAT，Starting Collect Data Dictionary Information----'	
+host echo '-----Oracle Database  Check STRAT,Starting Collect Data Dictionary Information----'	
 
 prompt Please Wait......
-host echo start.....Set Env Variables、ConfightmlHeader....
+host echo start.....Set Env Variables,ConfightmlHeader....
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -188,8 +188,8 @@ SELECT b.VERSION       dbVERSION,
 COLUMN startup_time NEW_VALUE _startup_time NOPRINT
 SELECT CASE np.value
          WHEN 'TRUE' then
-          listagg('【INST_ID ' || d.INST_ID || '：' ||
-                    TO_CHAR(startup_time, 'YYYY-MM-DD HH24:MI:SS') || '】  ',',') within group(order by INST_ID)
+          listagg('[INST_ID ' || d.INST_ID || ':' ||
+                    TO_CHAR(startup_time, 'YYYY-MM-DD HH24:MI:SS') || ']  ',',') within group(order by INST_ID)
          else
           listagg(TO_CHAR(startup_time, 'YYYY-MM-DD HH24:MI:SS'),',')   within group(order by INST_ID) || '  '
        end AS startup_time
@@ -231,9 +231,9 @@ SELECT listagg(hostinfo,',') within group(order by hostinfo) hostinfo
                   '  CPUs:' || SUM(CPUs) || '  Cores:' || SUM(Cores) ||
                   '  Sockets:' || SUM(Sockets) || '  Memory:' || SUM(Memory) || 'G'
                  WHEN 'YES' then
-                  '【' || 'Inst_id　' || instance_number || '：  CPUs:' ||
+                  '[' || 'Inst_id ' || instance_number || ':  CPUs:' ||
                   SUM(CPUs) || '  Cores:' || SUM(Cores) || '  Sockets:' ||
-                  SUM(Sockets) || '  Memory:' || SUM(Memory) || 'G】'
+                  SUM(Sockets) || '  Memory:' || SUM(Memory) || 'G]'
                end hostinfo
           FROM (SELECT o.snap_id,
                        o.dbid,
@@ -280,7 +280,7 @@ SELECT d.version timezone FROM v$timezone_file d ;
 COLUMN pdb NEW_VALUE _pdbs NOPRINT 
 SELECT CASE
          WHEN COUNT(1) > 0 THEN
-          'CDB，PDBHas' || COUNT(1) || 'Item，Are：'||listagg(a.NAME,',') within group(order by a.CON_ID)
+          'CDB,PDBHas' || COUNT(1) || 'Item,Are:'||listagg(a.NAME,',') within group(order by a.CON_ID)
          ELSE
           'NonCDB'
        END pdb
@@ -367,7 +367,7 @@ COLUMN v_sessionid NEW_VALUE _v_sessionid NOPRINT
 SELECT a.SID v_SID,
        b.SERIAL# v_SERIAL#,
        c.SPID v_SPID,
-       'INST_ID：'||b.INST_ID||',【'||a.SID||','||b.SERIAL# ||','||c.SPID||'】' v_sessionid  
+       'INST_ID:'||b.INST_ID||',['||a.SID||','||b.SERIAL# ||','||c.SPID||']' v_sessionid  
 FROM   v$mystat  a,
        gv$session b ,
        v$process c
@@ -387,7 +387,7 @@ COLUMN  lie_v_EXECUTIONS NEW_VALUE v_EXECUTIONS NOPRINT
 --       50000485760 lie_v_undosize, --bytes
 --       500485760   lie_v_plan_cost, --cost Cost
 --       514600000   lie_v_PLAN_CARDINALITY, --Est Rows
---       18000000000 lie_V_ELAPSED_TIME, ---Execution Time，e.g. exec time set5Hour，Then： 5h*60*60*1000000
+--       18000000000 lie_V_ELAPSED_TIME, ---Execution Time,e.g. exec time set5Hour,Then: 5h*60*60*1000000
 --       10000       lie_v_EXECUTIONS --Executions
 --  FROM dual;
 
@@ -537,23 +537,23 @@ WITH wt1 AS
      AND ts.TABLESPACE_NAME = fs.TABLESPACE_NAME(+)
      and ts.con_id = Df.con_id
      and ts.con_id = fs.con_id(+))
-SELECT 'All TS Info:【ts_size：' ||
-       round(SUM(t.all_bytes) / 1024 / 1024 / 1024, 2) || 'G , Used_Size：' ||
+SELECT 'All TS Info:[ts_size:' ||
+       round(SUM(t.all_bytes) / 1024 / 1024 / 1024, 2) || 'G , Used_Size:' ||
        round(SUM(t.all_bytes - t.FREESIZ) / 1024 / 1024 / 1024, 2) ||
-       'G , Used_per：' ||
+       'G , Used_per:' ||
        round(SUM(t.all_bytes - t.FREESIZ) * 100 / SUM(t.all_bytes), 2) ||
-       '% , MAX_Size：' || round(SUM(MAXSIZ) / 1024 / 1024 / 1024) || 'G】' DATABASE_SIZE
+       '% , MAX_Size:' || round(SUM(MAXSIZ) / 1024 / 1024 / 1024) || 'G]' DATABASE_SIZE
   FROM wt1 t;
 
 
 
 COLUMN recyclebin1 NEW_VALUE _recyclebin1 NOPRINT
 SELECT '''NULL''' recyclebin1 FROM dual;
-SELECT 'Status：' || a.VALUE || '，Occupied Space：' ||
+SELECT 'Status:' || a.VALUE || ',Occupied Space:' ||
        (SELECT round(SUM(a.space * (SELECT value
                                       FROM v$parameter
                                      WHERE name = 'db_block_size')) / 1024 / 1024,
-                     2) || 'M，Total' || count(1) || 'Objects'
+                     2) || 'M,Total' || count(1) || 'Objects'
           FROM cdb_recyclebin a) recyclebin1
   FROM v$parameter a
  WHERE a.NAME = 'recyclebin';
@@ -684,10 +684,10 @@ prompt <hr>
 prompt <a name="directory"><font size=+2 face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Directory</b></font></a>
 prompt <hr>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:-2cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#database_check_overview"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（One）Check Service Overview</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#database_check_overview"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(One)Check Service Overview</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="1"  nowrap align="center" width="10%"><a class="info" href="#database_ztgk"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Database Overall Summary</b><span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#basic_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database Basic Info<span>Database Overall Status、DG、OGG、Version、PSU、Host Status、Database Load Status、DB Properties etc.</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#basic_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database Basic Info<span>Database Overall Status,DG,OGG,Version,PSU,Host Status,Database Load Status,DB Properties etc.</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#database_size_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database Size<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#resource_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Resource Usage<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#db_option_REGISTRY"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Components & Features<span> </span></font></a></td> -
@@ -707,7 +707,7 @@ prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#flash_usage"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Flashback Space Usage<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#ts_temp_usage"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Temp Tablespace Usage<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#ts_undo_usage"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">UndoTablespace Usage<span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#ts_tu_aflag"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Undo Segment、Temp Segment Extension<span> </span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#ts_tu_aflag"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Undo Segment,Temp Segment Extension<span> </span></font></a></td> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#data_files"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Datafile Status<span> </span></font></a></td> -
@@ -734,13 +734,13 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt </table>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:-3.2cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#check_detail"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（Two）Check Service Details</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#check_detail"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(Two)Check Service Details</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="2"  nowrap align="center" width="10%"><a class="info" href="#database_rmanbackinfo"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>RMANInfo</b><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#rman_backup_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">RMANBackup Status<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#rman_configuration"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">RMANConfig Status<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#rman_all_backupsetinfo"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">RMANAll Backups<span>RMANAll Backups Overview</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#rman_backupset_detail_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">RMANAll Backup Details<span>RMANAll Backup Details，Exclude Archive Info</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#rman_backupset_detail_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">RMANAll Backup Details<span>RMANAll Backup Details,Exclude Archive Info</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#rman_backup_control_files"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Control File Backup<span> </span></font></a></td> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
@@ -791,7 +791,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#sql_statements_version_count10"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">VersionTOP10OfSQLStatement<span>SQL ordered by Version Count</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sql_statements_with_most_sharable_mem"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">MemoryTOP10OfSQLStatement<span>Forshared memorySorted by usage，RecordedSQLOccupylibrary cachesize ofTOP SQL</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sql_statements_with_most_sharable_mem"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">MemoryTOP10OfSQLStatement<span>Forshared memorySorted by usage,RecordedSQLOccupylibrary cachesize ofTOP SQL</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#disksortmax_sql"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">DISK_SORTSevereSQL<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#ashmax_sql"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">FromASHQuery ViewSQL<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#running_rubish_sql_11g"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">GarbageSQLOfRUNNING_11G<span> </span></font></a></td> -
@@ -799,9 +799,9 @@ prompt <tr style="background:#FFFFCC;"> -
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#running_rubish_sq1_10g"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">GarbageSQLOfRUNNING_10G<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#awr_last_sql_infoall"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">LASTIn SnapshotSQLStatus<span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastlongsql"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">LASTLongest execution time in snapshotSQL<span>In the latest snapshot，Get the one with longest execution timeSQL</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastsql_monitor"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Longest Exec TimeSQL<span>Atgv$sql_monitorIn，Sorted by time10Records</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastlongsqlreport"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Longest Execution TimeSQLReport<span>AtGV$SQL_MONITORIn，Get the one with longest execution timeSQL</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastlongsql"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">LASTLongest execution time in snapshotSQL<span>In the latest snapshot,Get the one with longest execution timeSQL</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastsql_monitor"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Longest Exec TimeSQL<span>Atgv$sql_monitorIn,Sorted by time10Records</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sql_elasled_lastlongsqlreport"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Longest Execution TimeSQLReport<span>AtGV$SQL_MONITORIn,Get the one with longest execution timeSQL</span></font></a></td> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#sql_no_bind"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Unused Bind VariablesSQLStatement<span>Find SQL not using bind variablesSQLStatement</span></font></a></td> -
@@ -828,7 +828,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt </table>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:-1cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#database_security"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（Three）Database Security</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#database_security"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(Three)Database Security</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="2"  nowrap align="center" width="10%"><a class="info" href="#database_userinfo"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Database User</b><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#user_accounts"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database User List<span> </span></font></a></td> -
@@ -862,7 +862,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt </table>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:-2.8cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#db_objects"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（Four）Database Objects</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#db_objects"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(Four)Database Objects</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="2"  nowrap align="center" width="10%"><a class="info" href="#database_segmentsinfo"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Segment Status</b><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#object_summary"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Object Summary<span> </span></font></a></td> -
@@ -912,7 +912,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#big_index_never_use"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Large Indexes Never Used<span>Greater Than1MIndexes not used during the snapshot period</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#index_cols_counts"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Index columns >3<span>Number of columns in composite index is generally3Item，Exceed3need to check rationality </span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#index_cols_counts"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Index columns >3<span>Number of columns in composite index is generally3Item,Exceed3need to check rationality </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#index_cols_high"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Index Height >3<span>Index Height >3Need to consider rebuilding index when</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#index_cols_STALE_STATS"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Index statistics are stale<span>Index statistics are stale</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699"><span> </span></font></a></td> -
@@ -927,7 +927,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="2"  nowrap align="center" width="10%"><a class="info" href="#database_othersobjects"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Other Objects</b><span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#link_alert_log"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Alert Log<span>Include： Latest2000lines of alert log、Latest10ItemoraAlert Log Records、Estimated Alert Log Size</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#link_alert_log"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Alert Log<span>Include: Latest2000lines of alert log,Latest10ItemoraAlert Log Records,Estimated Alert Log Size</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#dba_directories"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database Directory<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#dba_recycle_bin"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Recycle Bin Status<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#db_links"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Database Link(db_link)<span> </span></font></a></td> -
@@ -935,14 +935,14 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td nowrap align="center" width="18%"><a class="info" href="#all_triggers_show"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">All Triggers<span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sequence_cache_20"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">SequencecacheLess Than20<span>Generally increase it to1000Around，Sequence default20Too Small</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sequence_cache_20"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">SequencecacheLess Than20<span>Generally increase it to1000Around,Sequence default20Too Small</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#dba_mviews_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Materialized View<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#dba_types_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">type<span>type</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#data_pump_jobs_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Data Pump<span>Data Pump</span></font></a></td> -
 </tr>
 prompt </table>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:-2.8cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#database_performacefenxi"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（Five）Database Performance Analysis</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#database_performacefenxi"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(Five)Database Performance Analysis</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="2"  nowrap align="center" width="10%"><a class="info" href="#database_AWRINFO"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>AWR</b><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#awr_performance_analyze"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">AWRStatistics<span> </span></font></a></td> -
@@ -1015,7 +1015,7 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="1"  nowrap align="center" width="10%"><a class="info" href="#database_waitallinfo"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Other</b><span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#wait_event_current"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Wait Event<span>Include Current、History、Bysnap_idGroup by etc.</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#wait_event_current"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Wait Event<span>Include Current,History,Bysnap_idGroup by etc.</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#OLAP_info_all"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">OLAP<span>Online Analytical Processing - (OLAP)</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#Networking_info_all"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Networking<span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699"><span> </span></font></a></td> -
@@ -1023,11 +1023,11 @@ prompt <tr style="background:#FFFFCC;"> -
 </tr>
 prompt </table>
 prompt <table width="100%" border="1" bordercolor="#000000" cellspacing="0px" style="border-collapse:collapse; margin-top:0cm;" align="center"> -
-<tr><th colspan="6"><a class="info" href="#health_check_summary_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>（Six）Health Check Results</b></font></a></th></tr> -
+<tr><th colspan="6"><a class="info" href="#health_check_summary_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#ffffff"><b>(Six)Health Check Results</b></font></a></th></tr> -
 <tr style="background:#FFFFCC;"> -
 <td style="background-color:#FFCC00" rowspan="1"  nowrap align="center" width="10%"><a class="info" href="#health_check_summary_info"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#000000"><b>Health Check Results</b><span> </span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#health_check_summary_info_details"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Health Check Results<span>Because this script check is too detailed,So this part will filter the health check report，Filter out problematic parts</span></font></a></td> -
-<td nowrap align="center" width="18%"><a class="info" href="#sqlscripts_errors"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Errors generated during health check script execution<span>This part is not part of the health check report content，Only for executor to debug script，Individual errors are normal</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#health_check_summary_info_details"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Health Check Results<span>Because this script check is too detailed,So this part will filter the health check report,Filter out problematic parts</span></font></a></td> -
+<td nowrap align="center" width="18%"><a class="info" href="#sqlscripts_errors"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699">Errors generated during health check script execution<span>This part is not part of the health check report content,Only for executor to debug script,Individual errors are normal</span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699"><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699"><span> </span></font></a></td> -
 <td nowrap align="center" width="18%"><a class="info" href="#"><font size=+0.5 face="Courier New,Helvetica,sans-serif" color="#336699"><span> </span></font></a></td> - 
@@ -1099,7 +1099,7 @@ prompt <table width="1100" border="1" bordercolor="#000000" cellspacing="0px" st
 
  
 prompt <a name="database_version"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database System Version Info</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database System Version Info</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1112,7 +1112,7 @@ SELECT banner FROM v$version;
 
  
 prompt <a name="database_version"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database SystemPSUInfo</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database SystemPSUInfo</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1140,7 +1140,7 @@ SELECT d.con_id,
 
  
 prompt <a name="database_version"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Private NIC Info</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Private NIC Info</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1153,7 +1153,7 @@ SELECT * FROM gv$cluster_interconnects D;
 
 
 prompt <a name="instance_info"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Instance Status</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Instance Status</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1198,7 +1198,7 @@ SELECT '<div align="center"><font color="#336699"><b>' || INSTANCE_NAME ||
 
 
 prompt <a name="database_overview"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Summary</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Summary</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1248,7 +1248,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="pdb_overview"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● PDBStatus</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- PDBStatus</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1302,7 +1302,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="awr_host_info"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Server Host Info</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Server Host Info</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1410,20 +1410,20 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>] [<a cl
 
 
 prompt <a name="DB_LOAD_PROFILE"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Load Status</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Load Status</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 SET DEFINE ON
 
-prompt <center>[<a class="noLink" href="#awr_loadprofile"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：AWRIn Viewload profile</b></font></a>]</center><p>
+prompt <center>[<a class="noLink" href="#awr_loadprofile"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:AWRIn Viewload profile</b></font></a>]</center><p>
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>] [<a class="noLink" href="#initial_parameter_info">Next Item</a>]</center>
 
 
 
 prompt <a name="dbproperties_info"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Properties</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Properties</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1449,9 +1449,9 @@ CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
 
-prompt ● ts_datafile_physical_size_GIndicates actual physical size of all tablespace files，i.e. Tablespace Size（ExcludingtempTablespace）
-prompt ● ts_tempfile_physical_size_GIndicates actual size occupied by all temp tablespace files
-prompt ● ts_datafile_used_size_GIndicates usage size of all tablespaces，Actual datafile usage size，RMANUncompressed Backup Size（If using compressionas compressedBackup can reduce space by at least half）
+prompt - ts_datafile_physical_size_GIndicates actual physical size of all tablespace files,i.e. Tablespace Size(ExcludingtempTablespace)
+prompt - ts_tempfile_physical_size_GIndicates actual size occupied by all temp tablespace files
+prompt - ts_datafile_used_size_GIndicates usage size of all tablespaces,Actual datafile usage size,RMANUncompressed Backup Size(If using compressionas compressedBackup can reduce space by at least half)
 
 select A.CON_ID,
        A.ts_datafile_physical_size_G,
@@ -1578,7 +1578,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="options"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Options</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Options</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS  COMPUTES
 SET DEFINE OFF
@@ -1613,7 +1613,7 @@ prompt
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="database_registry"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Registry</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Registry</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1659,7 +1659,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="feature_usage_statistics"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Feature Usage Statistics</b></font>[<a class="noLink" href="#high_water_mark_statistics">Next Item</a>] <hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Feature Usage Statistics</b></font>[<a class="noLink" href="#high_water_mark_statistics">Next Item</a>] <hr align="left" width="450">
  
  
 CLEAR COLUMNS COMPUTES
@@ -1750,7 +1750,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="high_water_mark_statistics"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● High Water Mark Statistics</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- High Water Mark Statistics</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -1861,7 +1861,7 @@ COLUMN value                FORMAT a75    HEADING 'Value'             ENTMAP OFF
 COLUMN isdefault            FORMAT a75    HEADING 'Is Default?'       ENTMAP OFF
 COLUMN issys_modifiable     FORMAT a75    HEADING 'Is Dynamic?'       ENTMAP OFF
 COLUMN ISDEPRECATED     FORMAT a75    HEADING 'ISDEPRECATED'       ENTMAP OFF
-COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION　　　　　　　　　　　　　　　　'       ENTMAP OFF
+COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION                '       ENTMAP OFF
 
 
 SELECT P.CON_ID,DECODE(p.isdefault,
@@ -1904,7 +1904,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>] [<a cl
 
 prompt <a name="Implicit_parameters"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>PDBParameter</b></font></center><p> <hr align="left" width="600">
-prompt PDBparameters stored in CDB Of PDB_SPFILE$ in dictionary table con_id Diff，So， PDB Of PDB_SPFILE$ Table is empty，Can also queryV$SYSTEM_PARAMETERGet
+prompt PDBparameters stored in CDB Of PDB_SPFILE$ in dictionary table con_id Diff,So, PDB Of PDB_SPFILE$ Table is empty,Can also queryV$SYSTEM_PARAMETERGet
 
 
 CLEAR COLUMNS COMPUTES
@@ -1917,7 +1917,7 @@ COLUMN value                FORMAT a75    HEADING 'Value'             ENTMAP OFF
 COLUMN isdefault            FORMAT a75    HEADING 'Is Default?'       ENTMAP OFF
 COLUMN issys_modifiable     FORMAT a75    HEADING 'Is Dynamic?'       ENTMAP OFF
 COLUMN ISDEPRECATED     FORMAT a75    HEADING 'ISDEPRECATED'       ENTMAP OFF
-COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION　　　　　　　　　　　　　　　　'       ENTMAP OFF
+COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION                '       ENTMAP OFF
 SET DEFINE ON
 
 
@@ -1985,7 +1985,7 @@ COLUMN value                FORMAT a75    HEADING 'Value'             ENTMAP OFF
 COLUMN isdefault            FORMAT a75    HEADING 'Is Default?'       ENTMAP OFF
 COLUMN issys_modifiable     FORMAT a75    HEADING 'Is Dynamic?'       ENTMAP OFF
 COLUMN ISDEPRECATED     FORMAT a75    HEADING 'ISDEPRECATED'       ENTMAP OFF
-COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION　　　　　　　　　　　　　　　　'       ENTMAP OFF
+COLUMN DESCRIPTION     FORMAT a200    HEADING 'DESCRIPTION                '       ENTMAP OFF
 SET DEFINE ON
 
 
@@ -2247,7 +2247,7 @@ ORDER  BY CON_ID,TS# ;
 
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● SYSAUXTablespace Usage Details</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- SYSAUXTablespace Usage Details</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -2275,7 +2275,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="database_growth"></a>
-prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Tablespace Daily Growth（Database Growth）</b></font><hr align="left" width="500">
+prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Tablespace Daily Growth(Database Growth)</b></font><hr align="left" width="500">
 
 prompt <font size="1" face="Courier New,Helvetica,Geneva,sans-serif" color="#990000">NOTE: Can check viewcdb_hist_seg_statAndcdb_hist_seg_stat_objAnalyze incremental status of DB objects in detail</font>
 
@@ -2324,7 +2324,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="flash_usage"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b> Database Flashback Space Usage</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Flashback Space Overall Usage</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Flashback Space Overall Usage</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -2343,7 +2343,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="flash_usage_details"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Flashback Space Usage Details</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Flashback Space Usage Details</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -2429,13 +2429,13 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="ts_tu_aflag"></a>
-prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Observe Undo Segments，Temp Segment Extension</b></font><hr align="left" width="450">
+prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Observe Undo Segments,Temp Segment Extension</b></font><hr align="left" width="450">
 
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,Geneva,sans-serif" color="#990000">NOTE</font>:<font color="red"> UndoAndTempTablespace is not recommended to be set to auto-extend</font> </font></b>
 prompt 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Undo Segment</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Undo Segment</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -2464,7 +2464,7 @@ SELECT t.con_id,
 
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Temp Segment</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Temp Segment</b></font><hr align="left" width="450">
 
 COLUMN autoextensible          FORMAT a100   HEADING 'autoextensible'  ENTMAP OFF
 
@@ -2623,7 +2623,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="control_files_all"></a>
-prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Control File(Control Files) </b></font><hr align="left" width="600">
+prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Control File(Control Files) </b></font><hr align="left" width="600">
  
  
 -- +----------------------------------------------------------------------------+
@@ -2631,7 +2631,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="control_files"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Control Files</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Control Files</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -2801,7 +2801,7 @@ prompt <p>
 
 prompt <a name="jobs_info"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Job Run Status</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● cdb_jobs </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- cdb_jobs </b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -2814,7 +2814,7 @@ COLUMN next_date   FORMAT a140    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 COLUMN interval   FORMAT a100             HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Interval&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'         ENTMAP OFF
 COLUMN last_date   FORMAT a140    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last Run Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
 COLUMN failures   FORMAT a75             HEADING 'Failures'         ENTMAP OFF
-COLUMN broken     FORMAT a75             HEADING 'Is Broken？'          ENTMAP OFF
+COLUMN broken     FORMAT a75             HEADING 'Is Broken?'          ENTMAP OFF
 
 SET DEFINE ON
 
@@ -2870,7 +2870,7 @@ SELECT d.CON_ID,
 
 
 prompt 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● cdb_scheduler_jobs </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- cdb_scheduler_jobs </b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -2946,7 +2946,7 @@ prompt <a name="jobs_info_errores"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>DatabasejobError Msg</b></font> [<a class="noLink" href="#database_rmanbackinfo">Next Item</a>]<hr align="left" width="600">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Check Last Week，EveryjobGet Latest3Errors </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Check Last Week,EveryjobGet Latest3Errors </font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -3028,7 +3028,7 @@ prompt <a name="rman_backup_info"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>RMANBackup Status</b></font><hr align="left" width="600">
 
 
-prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >● Last 20 RMAN backup jobs</font></b>
+prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >- Last 20 RMAN backup jobs</font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -3088,8 +3088,8 @@ SELECT '<div nowrap><b><font color="#336699">' || r.command_id ||
  WHERE ROWNUM <= 20;
 
 
-prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >● RMANBackup Efficiency</font></b>
-prompt ● Observe type Col Is 'aggregate' Of EPS Col Value，If EPS column value is far less than backup hardware IO rate，Should look for issues in backup processes 
+prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >- RMANBackup Efficiency</font></b>
+prompt - Observe type Col Is 'aggregate' Of EPS Col Value,If EPS column value is far less than backup hardware IO rate,Should look for issues in backup processes 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -3121,7 +3121,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="rman_configuration"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>RMAN Config</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >● All non-default RMAN configuration settings</font></b>
+prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >- All non-default RMAN configuration settings</font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -3605,7 +3605,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="rman_backup_control_files"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>RMAN Control File Backup</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >● Available automatic control files within all available (and expired) backup sets</font></b>
+prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >- Available automatic control files within all available (and expired) backup sets</font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -3789,7 +3789,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="rman_backup_spfile"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>RMAN SPFILEBackup</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >● Available automatic SPFILE backups within all available (and expired) backup sets</font></b>
+prompt <b><font face="Courier New,Helvetica,Geneva,sans-serif" >- Available automatic SPFILE backups within all available (and expired) backup sets</font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -4118,7 +4118,7 @@ prompt <center><font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" co
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="flashback_database_parameters"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Flashback Database Parameters</b></font><hr align="left" width="600">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Flashback Database Parameters</b></font><hr align="left" width="600">
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: db_flashback_retention_target is specified in minutes; db_recovery_file_dest_size is specified in bytes  </font></b>
  
@@ -4166,7 +4166,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="flashback_database_status"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Flashback Database Status</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Flashback Database Status</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -4217,7 +4217,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="flashback_database_redo_time_matrix"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Flashback Database Redo Time Matrix</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Flashback Database Redo Time Matrix</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -4387,7 +4387,7 @@ prompt <a name="archiving_history"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Archive Log Generation</b></font><hr align="left" width="600">
 
 prompt <a name="archiving_history_all"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Archive log status (Last Month) </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Archive log status (Last Month) </b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -4424,8 +4424,8 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="archive_log_rate"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Archive Log Usage Ratio</b></font><hr align="left" width="600"> 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Further ObserveDB_RECOVERY_FILE_DEST_SIZEParameter，Consider latercrosscheck archivelog all; delete expired archivelog all;</font></b>
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If archive logs are not in flashback recovery area，Need to check server space</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Further ObserveDB_RECOVERY_FILE_DEST_SIZEParameter,Consider latercrosscheck archivelog all; delete expired archivelog all;</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If archive logs are not in flashback recovery area,Need to check server space</font></b>
 CLEAR COLUMNS COMPUTES
 SET DEFINE ON
 
@@ -4467,7 +4467,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="log_10_ratefenxi"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Near7Daily Log Switch Frequency Analysis</b></font> [<a class="noLink" href="#log_10_ratefenxiqiehuan">Next Item</a>]<hr align="left" width="600">
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Note: Observe rowsfirst_timeStart whether time difference is too short，Short interval means frequent switches，Gettop500</font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Note: Observe rowsfirst_timeStart whether time difference is too short,Short interval means frequent switches,Gettop500</font>
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -4530,7 +4530,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="log_10_ratefenxiqiehuan"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Daily Log Switch Volume</b></font><hr align="left" width="600">
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Daily log switch count in the last month，Can Analyze30Days fluctuation，Can also analyze24In Hours，Easy to spot abnormalities</font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Daily log switch count in the last month,Can Analyze30Days fluctuation,Can also analyze24In Hours,Easy to spot abnormalities</font>
 
 
 
@@ -5324,7 +5324,7 @@ prompt <a name="database_SQLinfo"></a>
 prompt <font size="+2" color="00CCFF"><b>SQLMonitor</b></font><hr align="left" width="800">
 prompt <p>
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. SYS, SYSTEM, db_monitor) ，SELECT database lever top 10 rows</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. SYS, SYSTEM, db_monitor) ,SELECT database lever top 10 rows</font></b>
 
 prompt <a name="sql_statements_with_most_buffer_gets"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Logical ReadsTOP10OfSQLStatement</b></font><hr align="left" width="600">
@@ -5760,7 +5760,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="sql_statements_with_most_sharable_mem"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>MemoryTOP10OfSQLStatement</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Forshared memorySorted by usage，RecordedSQLOccupylibrary cachesize ofTOP SQL </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Forshared memorySorted by usage,RecordedSQLOccupylibrary cachesize ofTOP SQL </font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -5972,7 +5972,7 @@ SELECT * FROM (SELECT *
           V.SQL_ID) WHERE ROWNUM<=100;
 
 
-prompt ● Most ConsumingCPUOfSQLStatement
+prompt - Most ConsumingCPUOfSQLStatement
 
 SELECT ASH.INST_ID,
        ASH.SQL_ID,
@@ -6006,7 +6006,7 @@ SELECT ASH.INST_ID,
 
 
 
-prompt ● Most ConsumingI/OOfSQLStatement
+prompt - Most ConsumingI/OOfSQLStatement
 SELECT ASH.INST_ID,
        ASH.SQL_ID,
        (SELECT VS.SQL_TEXT
@@ -6040,7 +6040,7 @@ SELECT ASH.INST_ID,
 
 
 
-prompt ● Most Resource ConsumingSQLStatement
+prompt - Most Resource ConsumingSQLStatement
 SELECT ASH.INST_ID,
        ASH.SQL_ID,
        (SELECT VS.SQL_TEXT
@@ -6282,7 +6282,7 @@ SELECT DISTINCT T.INST_ID,
                 T.LOGON_TIME,
     T.ASH_COUNTS,
                 T.SESSION_INFO, 
-                'Cartesian Product【' || COUNT(*) OVER(PARTITION BY T.INST_ID, T.SID, T.SERIAL#, T.SQL_ID) || '】Item' MONITOR_TYPES
+                'Cartesian Product[' || COUNT(*) OVER(PARTITION BY T.INST_ID, T.SID, T.SERIAL#, T.SQL_ID) || ']Item' MONITOR_TYPES
   FROM TMPS T
  WHERE T.PLAN_OPERATION = 'MERGE JOIN'
    AND T.PLAN_OPTIONS = 'CARTESIAN'
@@ -6400,7 +6400,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'In Execution PlanCOSTHuge Cost【' || T.PLAN_COST || '】' MONITOR_TYPES
+       'In Execution PlanCOSTHuge Cost[' || T.PLAN_COST || ']' MONITOR_TYPES
   FROM TMPS T
  WHERE T.PLAN_COST >= &v_plan_cost
    AND (nvl(PLAN_DEPTH,1)=1)
@@ -6438,7 +6438,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO, 
-       'Est. rows in execution plan is huge【' || T.PLAN_CARDINALITY || '】' MONITOR_TYPES
+       'Est. rows in execution plan is huge[' || T.PLAN_CARDINALITY || ']' MONITOR_TYPES
   FROM TMPS T
  WHERE T.PLAN_CARDINALITY > &v_PLAN_CARDINALITY
    AND (nvl(PLAN_DEPTH,1)=1)
@@ -6477,7 +6477,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO, 
-       'SQLToo many parallel requests【' || PX_MAXDOP || '】' MONITOR_TYPES
+       'SQLToo many parallel requests[' || PX_MAXDOP || ']' MONITOR_TYPES
   FROM TMPS T
  WHERE T.PX_MAXDOP>=8
     AND (nvl(PLAN_DEPTH,1)=1)
@@ -6516,7 +6516,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME, 
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'System estimated remaining execution time is too long【' || ROUND(D.TIME_REMAINING) || '】' MONITOR_TYPES
+       'System estimated remaining execution time is too long[' || ROUND(D.TIME_REMAINING) || ']' MONITOR_TYPES
   FROM TMPS T, GV$SESSION_LONGOPS D
  WHERE T.SQL_EXEC_ID = D.SQL_EXEC_ID
    AND T.SID = D.SID
@@ -6559,7 +6559,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'Wait Event Abnormal【' || T.EVENT || '】' MONITOR_TYPES
+       'Wait Event Abnormal[' || T.EVENT || ']' MONITOR_TYPES
   FROM TMPS T
  WHERE T.EVENT  NOT IN ('db file sequential read', 'db file scattered read','db file parallel write','db file parallel read')
    AND (nvl(PLAN_DEPTH,1)=1)
@@ -6598,7 +6598,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'SQLOccupyTMPTablespace Too Big【' || C.BYTES || '】Bytes' MONITOR_TYPES
+       'SQLOccupyTMPTablespace Too Big[' || C.BYTES || ']Bytes' MONITOR_TYPES
   FROM TMPS T,
        (SELECT A.INST_ID, A.SESSION_ADDR, SUM(A.BLOCKS) * 8 * 1024 BYTES
           FROM GV$TEMPSEG_USAGE A
@@ -6609,7 +6609,7 @@ SELECT T.INST_ID,
    AND (nvl(PLAN_DEPTH,1)=1)
 
 UNION ALL
------------------------------------------  SQLOccupyUNDOToo Large，INACTIVEsessions may also occupyUNDO，But only running ones are recorded hereSQLStatement
+-----------------------------------------  SQLOccupyUNDOToo Large,INACTIVEsessions may also occupyUNDO,But only running ones are recorded hereSQLStatement
 
 SELECT T.INST_ID,
        T.SID,
@@ -6641,7 +6641,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'SQLOccupyUNDOToo Large【' || USED_SIZE_BYTES || '】Bytes' MONITOR_TYPES
+       'SQLOccupyUNDOToo Large[' || USED_SIZE_BYTES || ']Bytes' MONITOR_TYPES
   FROM TMPS T,
        (SELECT ST.ADDR,
                ST.INST_ID,
@@ -6688,7 +6688,7 @@ SELECT T.INST_ID,
        T.LOGON_TIME,
        T.ASH_COUNTS,
        T.SESSION_INFO,
-       'ASHCapture Count【' || T.ASH_COUNTS || '】【'||SESSION_STATE||'】'  MONITOR_TYPES
+       'ASHCapture Count[' || T.ASH_COUNTS || ']['||SESSION_STATE||']'  MONITOR_TYPES
   FROM TMPS T
 WHERE T.ASH_COUNTS>=4
    AND (nvl(PLAN_DEPTH,1)=1)
@@ -6703,7 +6703,7 @@ prompt <a name="awr_last_sql_infoall"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>LASTIn SnapshotSQLStatus</b></font><hr align="left" width="600">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Copy this part toExcelIn，Based on exec time、Physical Reads、Sort by logical reads etc. for analysis</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Copy this part toExcelIn,Based on exec time,Physical Reads,Sort by logical reads etc. for analysis</font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE ON
@@ -6762,7 +6762,7 @@ SELECT &_snap_id || '~' || &_snap_id1 snap_id_range,
             WHERE st.sql_id = sqt.sql_id
               AND  st.dbid = sqt.dbid
 	      and rownum<=1),
-           (' 　　 SQL Text Not Available 　　 ')) sql_text
+           ('    SQL Text Not Available    ')) sql_text
   FROM (SELECT sql_id,
                a.dbid,
                a.parsing_schema_name,
@@ -6802,9 +6802,9 @@ prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> SELECT * FROM table
 
 prompt 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● htmlLongest execution time in HTML formatSQLReport</b></font><hr align="left" width="450"> 
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- htmlLongest execution time in HTML formatSQLReport</b></font><hr align="left" width="450"> 
 prompt 
-prompt <center>[<a class="noLink" href="#sql_elasled_lastlongsqllink"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：The one with longest execution timeSQLReport</b></font></a>]</center><p>
+prompt <center>[<a class="noLink" href="#sql_elasled_lastlongsqllink"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:The one with longest execution timeSQLReport</b></font></a>]</center><p>
 
 
 
@@ -6815,7 +6815,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="sql_elasled_lastsql_monitor"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Longest Exec TimeSQL</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Atgv$sql_monitorIn，Sorted by time10Records</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Atgv$sql_monitorIn,Sorted by time10Records</font></b>
 
 CLEAR COLUMNS COMPUTES
 
@@ -6854,21 +6854,21 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="sql_elasled_lastlongsqlreport"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Longest Execution TimeSQLReport</b></font><hr align="left" width="600">
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: 11gNot checked before，Atv$sql_monitorIn，Get the one with longest execution timesql </b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: 11gNot checked before,Atv$sql_monitorIn,Get the one with longest execution timesql </b>
 prompt 
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE ON
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript： SELECT dbms_sqltune.report_sql_monitor(sql_id  => &_sqlid1,type  => 'text',report_level => 'all') FROM dual; </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript: SELECT dbms_sqltune.report_sql_monitor(sql_id  => &_sqlid1,type  => 'text',report_level => 'all') FROM dual; </font></b>
 prompt  
 
 SELECT '<pre style="word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap" >' ||dbms_sqltune.report_sql_monitor(sql_id => &_sqlid1,type => 'text',report_level => 'all') ||'</pre>' sql_monitor_results FROM DUAL;
 
 prompt 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● htmlFormatsql_monitorReport</b></font><hr align="left" width="450"> 
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- htmlFormatsql_monitorReport</b></font><hr align="left" width="450"> 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: 11gNot checked before</font></b>
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Please copy the code below totxtIn File，Then save ashtmlFile，With internet access and canpingPassdownload.oracle.comopen when </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Please copy the code below totxtIn File,Then save ashtmlFile,With internet access and canpingPassdownload.oracle.comopen when </font></b>
  
 SET DEFINE ON 
 
@@ -7245,13 +7245,13 @@ CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 SET DEFINE ON
 
-prompt ● gv$dataguard_config
+prompt - gv$dataguard_config
 SELECT * FROM gv$dataguard_config;
-prompt ● gv$dataguard_process
+prompt - gv$dataguard_process
 SELECT * FROM gv$dataguard_process;
-prompt ● gv$dataguard_stats
+prompt - gv$dataguard_stats
 SELECT * FROM gv$dataguard_stats;
-prompt ● gv$dataguard_status
+prompt - gv$dataguard_status
 SELECT *
   FROM v$dataguard_status a
  where a.TIMESTAMP >= sysdate - 1
@@ -7520,7 +7520,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="user_size"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Total User Size</b></font><hr align="left" width="600">
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Objects in recycle bin excluded，ExcludedUNDOObject </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Objects in recycle bin excluded,ExcludedUNDOObject </font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -7736,7 +7736,7 @@ prompt
 
 SET MARKUP html TABLE  'width="80%" border="1" cellspacing="0px" style="border-collapse:collapse;" '
 
-SELECT '<textarea style="width:100%;font-family:Courier New;font-size:12px;overflow:auto" rows="10"> ' || 'In daily database maintenance，Often occurs because database login audit function is enabled,CauseSYSTEMTablespace Filled Up.Thus causing errors,Generally suggest toAUD$Migrate related objects to other tablespaces,Thus avoidingSYSTEMRisk of being exhausted. '||'
+SELECT '<textarea style="width:100%;font-family:Courier New;font-size:12px;overflow:auto" rows="10"> ' || 'In daily database maintenance,Often occurs because database login audit function is enabled,CauseSYSTEMTablespace Filled Up.Thus causing errors,Generally suggest toAUD$Migrate related objects to other tablespaces,Thus avoidingSYSTEMRisk of being exhausted. '||'
 -----10Gand earlier migration methods      '||'
 ALTER TABLE AUDIT$ MOVE TABLESPACE USERS;      '||'
 ALTER TABLE AUDIT_ACTIONS MOVE TABLESPACE USERS;      '||'
@@ -7792,7 +7792,7 @@ prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif"
 
 
 prompt <a name="table_sys_ts_infoall"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Overview of objects in SYSTEM tablespace</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Overview of objects in SYSTEM tablespace</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -7811,7 +7811,7 @@ ORDER  BY d.CON_ID,d.owner;
 
 
 prompt <a name="table_sys_ts_infoall"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Details of objects in SYSTEM tablespace</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Details of objects in SYSTEM tablespace</b></font><hr align="left" width="450">
 
 
 CLEAR COLUMNS COMPUTES
@@ -7854,7 +7854,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="table_sys_ts"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Which tables are on SYSTEM tablespace</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Which tables are on SYSTEM tablespace</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -7868,7 +7868,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="index_sys_ts"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Which indexes are on SYSTEM tablespace</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Which indexes are on SYSTEM tablespace</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -7998,7 +7998,7 @@ host echo "                Largest Size10Segments. . . ."
 prompt <a name="top_10_segments_by_size"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Largest Size10Segments</b></font><hr align="left" width="600">
 
-prompt <b><font color="#990000">●  Calculated by Segment</font></b>
+prompt <b><font color="#990000">-  Calculated by Segment</font></b>
 
 
 CLEAR COLUMNS COMPUTES
@@ -8037,7 +8037,7 @@ SELECT a.con_id, a.owner,
  WHERE ROWNUM <= 20;
 
 
-prompt <b><font color="#990000">●  Calculated by object dimension</font> </b>
+prompt <b><font color="#990000">-  Calculated by object dimension</font> </b>
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -8057,7 +8057,7 @@ SELECT *
  WHERE ROWNUM <= 10;
 
 
-prompt <b><font color="#990000">●  Calculated by tablespace dimension，Top N for each tablespace3Large Tables</font> </b>
+prompt <b><font color="#990000">-  Calculated by tablespace dimension,Top N for each tablespace3Large Tables</font> </b>
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -8150,7 +8150,7 @@ prompt <a name="dba_lob_segments"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>LOBSegment</b></font><hr align="left" width="600">
  
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM) ，SELECT top 100 rows </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM) ,SELECT top 100 rows </font></b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -8316,7 +8316,7 @@ prompt <center><font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" co
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="undo_retention_parameters"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● UNDO Retention Parameters</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- UNDO Retention Parameters</b></font><hr align="left" width="450">
  
 prompt <b>undo_retention is specified in minutes</b>
  
@@ -8363,9 +8363,9 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="undo_segments"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Undo Segment Details</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Undo Segment Details</b></font><hr align="left" width="450">
  
-prompt <b>● AllUNDOAll Segments Recorded，May be used in recovery</b>
+prompt <b>- AllUNDOAll Segments Recorded,May be used in recovery</b>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -8436,7 +8436,7 @@ SELECT a.CON_ID,
  
  
 prompt
-prompt <b>● Wait statistics</b>
+prompt <b>- Wait statistics</b>
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -8863,7 +8863,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="procedural_object_errors"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Procedural Object Errors</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Procedural Object Errors</b></font><hr align="left" width="450">
  
 prompt <b>All records FROM cdb_ERRORS</b>
  
@@ -9020,7 +9020,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="size_table_2"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Large Table No Index</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Greater Than2GLarge Table No Index</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Greater Than2GLarge Table No Index</b></font><hr align="left" width="450">
  
 
 CLEAR COLUMNS COMPUTES
@@ -9041,7 +9041,7 @@ ORDER  BY d.CON_ID, bytes DESC;
 
  
 prompt <a name="size_parttable_2"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Greater Than2GBpartitioned tables without indexes</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Greater Than2GBpartitioned tables without indexes</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -9194,7 +9194,7 @@ host echo "                Large Indexes Never Used. . . ."
 prompt <a name="big_index_never_use"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Large Indexes Never Used</b></font><hr align="left" width="600">
 
-prompt <font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Find >1MIndex of，Never used during snapshot period，Get SizeTOP50 
+prompt <font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Find >1MIndex of,Never used during snapshot period,Get SizeTOP50 
 
 
 CLEAR COLUMNS COMPUTES
@@ -9317,7 +9317,7 @@ host echo "                Index columns >3. . . ."
 prompt <a name="index_cols_counts"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Index columns >3</b></font>[<a class="noLink" href="#index_cols_high">Next Item</a>]<hr align="left" width="600">
 
-prompt <font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Number of columns in composite index is generally3Item，Exceed3need to check rationality 
+prompt <font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Number of columns in composite index is generally3Item,Exceed3need to check rationality 
 
 
 CLEAR COLUMNS COMPUTES
@@ -9344,7 +9344,7 @@ SELECT TABLE_OWNER,
        PARTITIONED,
        IND_COLS_COUNT,
        (SELECT round(SUM(bytes) / 1024 / 1024, 2)
-          FROM CDB_segments nd　　
+          FROM CDB_segments nd  
          WHERE segment_name = index_name
            AND nd.owner = INDEX_OWNER
            AND ND.CON_ID = V.CON_ID) INDEX_SIZE_M,
@@ -9457,7 +9457,7 @@ SELECT TABLE_OWNER,
        PARTITIONED,
        IND_COLS_COUNT,
        (SELECT round(SUM(bytes) / 1024 / 1024, 2)
-          FROM CDB_segments nd　　
+          FROM CDB_segments nd  
          WHERE segment_name = index_name
            AND nd.owner = INDEX_OWNER
            AND ND.CON_ID = V.CON_ID) INDEX_SIZE_M,
@@ -9571,7 +9571,7 @@ SELECT TABLE_OWNER,
        PARTITIONED,
        IND_COLS_COUNT,
        (SELECT round(SUM(bytes) / 1024 / 1024, 2)
-          FROM CDB_segments nd　　
+          FROM CDB_segments nd  
          WHERE segment_name = index_name
            AND nd.owner = INDEX_OWNER
            AND ND.CON_ID = V.CON_ID) INDEX_SIZE_M,
@@ -9718,18 +9718,18 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 
 SET DEFINE OFF
 SET DEFINE ON
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Alert Log：&_ALERTLOG_PATH </font> </b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Alert Log:&_ALERTLOG_PATH </font> </b>
 prompt
 
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● View latest (Last Week)200lines of alert log</b></font>[<a class="noLink" href="#altet_100">Next Item</a>]<hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- View latest (Last Week)200lines of alert log</b></font>[<a class="noLink" href="#altet_100">Next Item</a>]<hr align="left" width="450">
 
 --SELECT '<textarea cols="120" rows="10"> ' || message_text || '</textarea>'  message_text FROM T_ALERT_CHECKHELTH_CLOB_LHR;
 --SELECT '<textarea style="width:100%;font-family:Courier New;font-size:12px;overflow:auto" rows="10"> ' || message_text || '</textarea>'  message_text FROM T_ALERT_CHECKHELTH_CLOB_LHR;
 SET DEFINE OFF
 COLUMN alert_date   FORMAT a180    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
-COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;　　　　　　　　　　　　　　'  ENTMAP OFF
+COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              '  ENTMAP OFF
 SET DEFINE ON
 
 SELECT *
@@ -9773,13 +9773,13 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 -------View Latest100lines of alert log
-prompt 　
+prompt  
 prompt <a name="altet_100"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● View latest (Last Month)100lines of alert log(Exclude log switches)，Sorted by time descending</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- View latest (Last Month)100lines of alert log(Exclude log switches),Sorted by time descending</b></font><hr align="left" width="450">
 
 SET DEFINE OFF
 COLUMN alert_date   FORMAT a180    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
-COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;　　　　　　　　　　　　　　'  ENTMAP OFF
+COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              '  ENTMAP OFF
 SET DEFINE ON
 
 SELECT b.*
@@ -9820,12 +9820,12 @@ SELECT b.*
 
 
 -------View Latest10ItemoraAlert Log Records
-prompt 　
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● View latest (Last Month)10ItemoraAlert Log Records，Sorted by time descending</b></font><hr align="left" width="450">
+prompt  
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- View latest (Last Month)10ItemoraAlert Log Records,Sorted by time descending</b></font><hr align="left" width="450">
 
 SET DEFINE OFF
 COLUMN alert_date   FORMAT a180    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF	
-COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;　　　　　　　　　　　　　　'  ENTMAP OFF
+COLUMN message_text   FORMAT a300    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              '  ENTMAP OFF
 SET DEFINE ON
 
 SELECT b.*
@@ -9860,10 +9860,10 @@ SELECT b.*
 
 
 
--------Estimated Alert Log Size，Tested1WRows approx0.5M
-prompt 　
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Estimated Alert Log Size</b></font><hr align="left" width="450">
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If alert log is too large, it affects DB performance，Recommend backing up alert logs regularly，Size is estimated and may not be accurate </font></b>
+-------Estimated Alert Log Size,Tested1WRows approx0.5M
+prompt  
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Estimated Alert Log Size</b></font><hr align="left" width="450">
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If alert log is too large, it affects DB performance,Recommend backing up alert logs regularly,Size is estimated and may not be accurate </font></b>
 
 SELECT d.total_rows_number total_rows_number,
        case
@@ -9904,7 +9904,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="dba_directories"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Database Directory</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Database Directory Overview</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Database Directory Overview</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -9926,7 +9926,7 @@ SELECT d.CON_ID,d.ORIGIN_CON_ID,d.OWNER,d.DIRECTORY_NAME,d.DIRECTORY_PATH
 -- +----------------------------------------------------------------------------+
 
 prompt <a name="dba_directory_privileges"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Dir Permission</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Dir Permission</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -9980,7 +9980,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 
 
 -- BREAK ON report ON owner
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Size of objects in recycle bin</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Size of objects in recycle bin</b></font><hr align="left" width="450">
 
 
 SELECT a.CON_ID,
@@ -9998,7 +9998,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Oldest in Recycle Bin10Objects</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Oldest in Recycle Bin10Objects</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -10140,7 +10140,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="all_triggers_show"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>All Triggers</b></font><hr align="left" width="600">
 prompt  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Overall Status</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Overall Status</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
  
@@ -10151,7 +10151,7 @@ SELECT d.CON_ID, OWNER, count(1)  cnt
  ORDER BY d.CON_ID, cnt desc;
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Detailed Status，ByUser，Top N per User10Row</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Detailed Status,ByUser,Top N per User10Row</b></font><hr align="left" width="450">
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM)</font> </b>
 SELECT *
   FROM (SELECT d.CON_ID, OWNER,
@@ -10175,7 +10175,7 @@ SELECT *
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● databaseLevel Triggers</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- databaseLevel Triggers</b></font><hr align="left" width="450">
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM) </font></b>
 CLEAR COLUMNS COMPUTES
@@ -10201,7 +10201,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● DISABLEDTrigger of</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- DISABLEDTrigger of</b></font><hr align="left" width="450">
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM) </font></b>
 CLEAR COLUMNS COMPUTES
@@ -10227,12 +10227,12 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="sequence_cache_20"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>SequencecacheLess Than20</b></font><hr align="left" width="600"> 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● SequencecacheLess Than20,If sequence wait occurs，Generally increase it to1000Around，Sequence default20Too Small</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- SequencecacheLess Than20,If sequence wait occurs,Generally increase it to1000Around,Sequence default20Too Small</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
 
-prompt  ● Overall Status
+prompt  - Overall Status
 SELECT t.CON_ID, sequence_owner, count(1) cnt
   FROM cdb_sequences t
  WHERE cache_size < 20
@@ -10240,7 +10240,7 @@ SELECT t.CON_ID, sequence_owner, count(1) cnt
  GROUP BY t.CON_ID, t.sequence_owner
  ORDER BY cnt desc;
 
-prompt  ● Detailed Status 
+prompt  - Detailed Status 
 
 COLUMN order_flag FORMAT a10             HEADING 'order_flag'      ENTMAP OFF 
 SELECT t.CON_ID,
@@ -10258,13 +10258,13 @@ SELECT t.CON_ID,
 
 prompt 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SequenceAUDSES$Status of，Occurs when multiple sessions connect at the same time </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SequenceAUDSES$Status of,Occurs when multiple sessions connect at the same time </font></b>
 SELECT * FROM cdb_sequences d WHERE d.sequence_name ='AUDSES$' order by con_id; 
 
 prompt   
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Whether there are sequence waits in historical wait events，Strongly recommended to modify sequence in this partcacheValue </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Whether there are sequence waits in historical wait events,Strongly recommended to modify sequence in this partcacheValue </b></font><hr align="left" width="450">
 
-prompt  ● All Sequence Wait Summary 
+prompt  - All Sequence Wait Summary 
 
 SELECT WB.*,
        'ALTER SEQUENCE  ' || WB.USERNAME || '.' || WB.SEQUENCE_NAME ||
@@ -10290,7 +10290,7 @@ SELECT WB.*,
            AND D.EVENT LIKE 'enq: SQ%') WB
 					 order by CON_ID;
 
-prompt  ● All Sequence Wait Details（Recent200Item）
+prompt  - All Sequence Wait Details(Recent200Item)
 
 SELECT *
   FROM (SELECT d.CON_ID, TO_CHAR(D.SAMPLE_TIME, 'YYYY-MM-DD HH24:MI:SS') SAMPLE_TIME,
@@ -10337,7 +10337,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
 prompt <a name="dba_mviews_info"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Materialized View</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Materialized View related parameters</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Materialized View related parameters</b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -10354,7 +10354,7 @@ SELECT d.NAME,
                          'OPTIMIZER_MODE')
 ;
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● All Materialized Views</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- All Materialized Views</b></font><hr align="left" width="450">
 
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Only Top500Row </font> </b>
@@ -10606,7 +10606,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="dba_type_methods"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Type Methods</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Type Methods</b></font><hr align="left" width="450">
  
 prompt <b>Excluding all internal system schemas (i.e. CTXSYS, MDSYS, SYS, SYSTEM)</b>
  
@@ -11033,16 +11033,16 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>AWRParameter Config Status</b></font><hr align="left" width="600">
 
 
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Current Status</b></font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Current Status</b></font>
 prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> Use the DBMS_WORKLOAD_REPOSITORY.MODIFY_SNAPSHOT_SETTINGS procedure to modify the interval </font>
 prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> of the snapshot generation AND  how long the snapshots are retained in the Workload Repository. The </font>
 prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> default interval is 60 minutes AND  can be set to a value between 10 minutes AND  5,256,000 (1 year). </font>
 prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> The default retention period is 10,080 minutes (7 days) AND  can be set to a value between </font>
 prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> 1,440 minutes (1 day) AND  52,560,000 minutes (100 years). </font>
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> EnableAWRMust satisfy below3Conditions： </font>
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> ① STATISTICS_LEVELValue isTYPICALOr ALL </font>
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> ② SELECT * FROM dba_hist_wr_control In，snap_intervalCannot be infinite，Generalexec DBMS_WORKLOAD_REPOSITORY.MODIFY_SNAPSHOT_SETTINGS(INTERVAL => 60); </font>
-prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> ③ SELECT SYSDATE - d.end_interval_time FROM   dba_hist_snapshot d WHERE  d.snap_id = (SELECT MAX(snap_id) FROM dba_hist_snapshot); Must >0，If less than0You can manually generate snapshots a few times to solve this：exec dbms_workload_repository.create_snapshot(); </font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> EnableAWRMust satisfy below3Conditions: </font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> (1) STATISTICS_LEVELValue isTYPICALOr ALL </font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> (2) SELECT * FROM dba_hist_wr_control In,snap_intervalCannot be infinite,Generalexec DBMS_WORKLOAD_REPOSITORY.MODIFY_SNAPSHOT_SETTINGS(INTERVAL => 60); </font>
+prompt <font face="Courier New,Helvetica,Geneva,sans-serif"> (3) SELECT SYSDATE - d.end_interval_time FROM   dba_hist_snapshot d WHERE  d.snap_id = (SELECT MAX(snap_id) FROM dba_hist_snapshot); Must >0,If less than0You can manually generate snapshots a few times to solve this:exec dbms_workload_repository.create_snapshot(); </font>
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -11066,7 +11066,7 @@ SELECT '<div align="left"><font color="#336699"><b>' || s.dbid ||
 
 
 prompt
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● History Status(Get Recent7Days Snapshot，Only Top50Rows)</b></font>
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- History Status(Get Recent7Days Snapshot,Only Top50Rows)</b></font>
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -11075,8 +11075,8 @@ COLUMN snap_id              FORMAT a75               HEADING 'Snap ID'          
 COLUMN end_interval_time   FORMAT a160    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End_Interval_Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
 COLUMN begin_interval_time   FORMAT a140    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Begin_Interval_Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
 COLUMN startup_time   FORMAT a140    HEADING '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;startup_time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'  ENTMAP OFF
-COLUMN elapsed_time         FORMAT 999,999,999.99    HEADING 'Elapsed_Time_(min)　'     ENTMAP OFF
-COLUMN db_time              FORMAT 999,999,999.99    HEADING 'DB_Time (min)　'          ENTMAP OFF
+COLUMN elapsed_time         FORMAT 999,999,999.99    HEADING 'Elapsed_Time_(min) '     ENTMAP OFF
+COLUMN db_time              FORMAT 999,999,999.99    HEADING 'DB_Time (min) '          ENTMAP OFF
 COLUMN pct_db_time          FORMAT a75               HEADING '&nbsp;&nbsp;% DB_Time&nbsp;&nbsp;'              ENTMAP OFF
 COLUMN cpu_time             FORMAT 999,999,999.99    HEADING '&nbsp;&nbsp;CPU Time (min)&nbsp;&nbsp;'         ENTMAP OFF
 COLUMN RETENTION          FORMAT a100               HEADING '&nbsp;&nbsp;&nbsp;&nbsp;RETENTION&nbsp;&nbsp;&nbsp;&nbsp;'              ENTMAP OFF
@@ -11170,7 +11170,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Database Server Host Info</b></font><hr align="left" width="600">
 
 
-prompt <center>[<a class="noLink" href="#awr_host_info"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Database Server Host Info</b></font></a>]</center><p>
+prompt <center>[<a class="noLink" href="#awr_host_info"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Database Server Host Info</b></font></a>]</center><p>
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
@@ -11357,7 +11357,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 SET DEFINE ON
 prompt  SELECT * FROM table(dbms_workload_repository.awr_report_html(&_dbid,&_instance_number,&_snap_id,&_snap_id1));
 prompt 
-prompt <center>[<a class="noLink" href="#awr_new_lastone_link"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：The LatestAWRReport</b></font></a>]</center><p>
+prompt <center>[<a class="noLink" href="#awr_new_lastone_link"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:The LatestAWRReport</b></font></a>]</center><p>
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
@@ -11672,7 +11672,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 prompt <a name="ash_snapshot_info"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>ASHSnapshot Status</b></font><hr align="left" width="600">
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● History Status(Get Recent7Days Snapshot)</b></font>
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- History Status(Get Recent7Days Snapshot)</b></font>
 
  
 
@@ -11740,10 +11740,10 @@ prompt <a name="ash_lastone_info"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>The LatestASHReport</b></font><hr align="left" width="600">
 
 SET DEFINE ON
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript ： SELECT * FROM table(dbms_workload_repository.ash_report_html(&_dbid,&_instance_number,(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id AND  a.INSTANCE_NUMBER= &_instance_number ),(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id1 AND  a.INSTANCE_NUMBER= &_instance_number))); </font>  </b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript : SELECT * FROM table(dbms_workload_repository.ash_report_html(&_dbid,&_instance_number,(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id AND  a.INSTANCE_NUMBER= &_instance_number ),(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id1 AND  a.INSTANCE_NUMBER= &_instance_number))); </font>  </b>
 
 prompt
-prompt <center>[<a class="noLink" href="#ASH_new_lastone"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Data Reference：ASHData</b></font></a>]</center><p>
+prompt <center>[<a class="noLink" href="#ASH_new_lastone"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Data Reference:ASHData</b></font></a>]</center><p>
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
@@ -11782,7 +11782,7 @@ END;
 
 
 prompt 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>:　SQLScript： SELECT dbms_advisor.get_task_report('HEALTH_CHECK_BY_LHR', 'TEXT', 'ALL') addm_results  FROM DUAL; </font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript: SELECT dbms_advisor.get_task_report('HEALTH_CHECK_BY_LHR', 'TEXT', 'ALL') addm_results  FROM DUAL; </font></b>
 SET MARKUP html TABLE  'width="60%" border="1" cellspacing="0px" style="border-collapse:collapse;" ' 
 SELECT  '<textarea style="width:100%;font-family:Courier New;font-size:12px;overflow:auto" rows="10"> ' || dbms_advisor.get_task_report('HEALTH_CHECK_BY_LHR', 'TEXT', 'ALL') ||'</textarea>' addm_results  FROM DUAL;
 SET MARKUP html TABLE  'width="auto" border="1" cellspacing="0px" style="border-collapse:collapse;" '
@@ -11796,7 +11796,7 @@ alter session set nls_language='AMERICAN';
 SELECT '<pre style="font-family:Courier New; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap" >' || dbms_advisor.get_task_report('HEALTH_CHECK_BY_LHR', 'TEXT', 'ALL') || '</pre>' addm_results FROM DUAL;
 alter session set nls_language='&_nls_language'; 
 
---prompt <center>[<a class="noLink" href="#ADDM_new_lastone"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Data Reference：ADDMData</b></font></a>]</center><p>
+--prompt <center>[<a class="noLink" href="#ADDM_new_lastone"><font size=+1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Data Reference:ADDMData</b></font></a>]</center><p>
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
@@ -11808,8 +11808,8 @@ prompt <a name="hot_blocks_summary"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Hot Block</b></font><hr align="left" width="600">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: This part requiressysUser grants check user onx$bhquery permission on，SQL: CREATE OR REPLACE VIEW bh AS SELECT * FROM sys.x$bh;  create or replace public synonym x$bh for bh;</font></b>
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If this part is too slow，Collect system statistics before executing：exec dbms_stats.gather_dictionary_stats; exec dbms_stats.gather_fixed_objects_stats;</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: This part requiressysUser grants check user onx$bhquery permission on,SQL: CREATE OR REPLACE VIEW bh AS SELECT * FROM sys.x$bh;  create or replace public synonym x$bh for bh;</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: If this part is too slow,Collect system statistics before executing:exec dbms_stats.gather_dictionary_stats; exec dbms_stats.gather_fixed_objects_stats;</font></b>
 prompt 
 
 
@@ -11817,7 +11817,7 @@ CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Hot Block(Summary)</b></font>
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Hot Block(Summary)</b></font>
 
 SELECT  /*+rule */ e.CON_ID, e.owner, e.segment_name, e.segment_type, sum(b.tch) sum_tch
           FROM cdb_extents e,
@@ -11834,7 +11834,7 @@ SELECT  /*+rule */ e.CON_ID, e.owner, e.segment_name, e.segment_type, sum(b.tch)
 ORDER BY e.CON_ID,sum_tch desc;
 
 prompt 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Hot Block(Expand，Unsummarized）</b></font> 
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Hot Block(Expand,Unsummarized)</b></font> 
 SELECT /*+rule */ distinct e.con_id,e.owner, e.segment_name, e.segment_type, dbablk,b.tch
           FROM cdb_extents e,
                (SELECT *
@@ -11859,8 +11859,8 @@ prompt <p>
 
 prompt <a name="statics_gatherflag"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Are statistics collected automatically</b></font><hr align="left" width="600">
-prompt ● Oracle 10gdefault time window is：Every weekday night10to next day morning6Dot，Dur.8Hour；All weekend time, i.e., collected all day on weekends（Friday Night10to Monday morning6Dot）。
-prompt ● Oracle 11gand later versions default time window is：Every weekday night10to next day morning2Dot，Dur.4Hour；Every Saturday Morning6to Sunday morning2Dot，Sunday Morning6to Monday morning2Dot，Last for20Hours。
+prompt - Oracle 10gdefault time window is:Every weekday night10to next day morning6Dot,Dur.8Hour;All weekend time, i.e., collected all day on weekends(Friday Night10to Monday morning6Dot).
+prompt - Oracle 11gand later versions default time window is:Every weekday night10to next day morning2Dot,Dur.4Hour;Every Saturday Morning6to Sunday morning2Dot,Sunday Morning6to Monday morning2Dot,Last for20Hours.
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -11873,7 +11873,7 @@ SELECT C.* FROM CDB_AUTOTASK_CLIENT C ORDER BY C.CON_ID;
 
 
 
-prompt ● Details of automatic statistics collection
+prompt - Details of automatic statistics collection
 
 SELECT A.CON_ID,
        A.WINDOW_NAME,
@@ -11906,7 +11906,7 @@ SELECT A.CON_ID,
 
 
 
-prompt ● Automatic statistics collectionJOBRun Error Logs
+prompt - Automatic statistics collectionJOBRun Error Logs
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -12009,7 +12009,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 
 prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Tables that have never had statistics collected or1Tables without statistics collected in months </font></b>
 prompt  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Overall Status </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Overall Status </b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -12066,10 +12066,10 @@ SELECT CON_ID,OWNER,
 
 
 prompt  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Detailed Status </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Detailed Status </b></font><hr align="left" width="450">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: 1Tables without stats in a month (Top N)100Sheet，Get all tables without statistics</font></b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: 1Tables without stats in a month (Top N)100Sheet,Get all tables without statistics</font></b>
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -12128,7 +12128,7 @@ prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#33
 
 
 prompt  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Overall Status </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Overall Status </b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -12163,7 +12163,7 @@ SELECT CON_ID, T.OWNER index_owner, T.TABLE_OWNER, T.OBJECT_TYPE, COUNT(1) COUNT
 
 
 prompt  
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Detailed Status </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Detailed Status </b></font><hr align="left" width="450">
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
 
@@ -12328,7 +12328,7 @@ host echo "                HistoryACTIVESession Count. . . ."
 prompt <a name="user_session_active_his"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>HistoryACTIVESession Count </b></font><hr align="left" width="600">
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● HistoryACTIVESession Count(Show by Snapshot) </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- HistoryACTIVESession Count(Show by Snapshot) </b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -12357,7 +12357,7 @@ SELECT T.CON_ID, t.inst_id, TIME, t.snap_id, count(1) counts1
 
 
 prompt
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● HistoryACTIVESession Count(Show by Hour) </b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- HistoryACTIVESession Count(Show by Hour) </b></font><hr align="left" width="450">
 
  
 
@@ -12651,8 +12651,8 @@ ORDER  BY a.sid;
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</center><p>
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Fromv$SESSIONQuery</b></font><hr align="left" width="450">
-prompt <font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Common data dictionary views related to locks areDBA_DML_LOCKS、DBA_DDL_LOCKS、V$LOCK、DBA_LOCK、V$LOCKED_OBJECT。V$LOCKED_OBJECTRecorded isDMLLock Info，But not recordedDDLLock。V$LOCKAndDBA_LOCKSAndDBA_LOCKcontent is same，DBA_LOCKSIsDBA_LOCKSynonym of。 </font>
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Fromv$SESSIONQuery</b></font><hr align="left" width="450">
+prompt <font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: Common data dictionary views related to locks areDBA_DML_LOCKS,DBA_DDL_LOCKS,V$LOCK,DBA_LOCK,V$LOCKED_OBJECT.V$LOCKED_OBJECTRecorded isDMLLock Info,But not recordedDDLLock.V$LOCKAndDBA_LOCKSAndDBA_LOCKcontent is same,DBA_LOCKSIsDBA_LOCKSynonym of. </font>
 
 SELECT A.CON_ID,
        A.INST_ID,
@@ -12865,7 +12865,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 prompt <a name="library_cache_ratiosss"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>librarycacheHit Ratio</b></font><hr align="left" width="600">
-prompt NOTE: If lower than95%，Need to adjust application to use bind variables，Or adjust database parametershared_pool_sizeSize of
+prompt NOTE: If lower than95%,Need to adjust application to use bind variables,Or adjust database parametershared_pool_sizeSize of
 
 
 CLEAR COLUMNS COMPUTES
@@ -12945,7 +12945,7 @@ prompt <p>
 
 prompt <a name="wait_event_current"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Wait Event</b></font><hr align="left" width="600">
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Wait Event（Current）</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Wait Event(Current)</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -12970,7 +12970,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Wait Event（cdb_hist_active_sess_history）</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Wait Event(cdb_hist_active_sess_history)</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -13035,7 +13035,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 
 
 prompt <a name="wait_event_history"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● Non-idle Wait Events（History Summary）</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- Non-idle Wait Events(History Summary)</b></font><hr align="left" width="450">
 
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -13133,7 +13133,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="mts_dispatcher_response_queue_wait_stats"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● MTS Dispatcher Response Queue Wait Stats</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- MTS Dispatcher Response Queue Wait Stats</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE OFF
@@ -13163,7 +13163,7 @@ prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>]</cente
 -- +----------------------------------------------------------------------------+
  
 prompt <a name="mts_shared_server_wait_statistics"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● MTS Shared Server Wait Statistics</b></font><hr align="left" width="450">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- MTS Shared Server Wait Statistics</b></font><hr align="left" width="450">
  
 CLEAR COLUMNS COMPUTES
 SET DEFINE ON
@@ -13229,8 +13229,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                 WHERE D.NAME = 'spfile'
                                   AND D.VALUE IS NOT NULL) = 0 then
                           (select 1 || '|' || 5 || '|' || 'Check Service Overview.Parameter File' || '|' ||
-                                  'Database not usingspfileFile，Strongly Recommend CreatespfileFile' || '|' ||
-                                  '<center>[<a class="noLink" href="#initialization_parameters"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：All Initialization Parameters</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Database not usingspfileFile,Strongly Recommend CreatespfileFile' || '|' ||
+                                  '<center>[<a class="noLink" href="#initialization_parameters"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:All Initialization Parameters</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end AS health_check_results
                   from dual
@@ -13245,8 +13245,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                          FROM CDB_TEMP_FILES D
                                         WHERE D.STATUS = 'OFFLINE')) > 0 then
                           (select 2 || '|' || 1 || '|' || 'Check Service Overview.Tablespace Status.Datafile Status' || '|' ||
-                                  'Database hasOFFLINEdatafiles with status，Recommend fixing this immediately' || '|' ||
-                                  '<center>[<a class="noLink" href="#data_files"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Datafile Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Database hasOFFLINEdatafiles with status,Recommend fixing this immediately' || '|' ||
+                                  '<center>[<a class="noLink" href="#data_files"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Datafile Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13257,7 +13257,7 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                 WHERE (DI.TOTAL_MB - DI.FREE_MB) / DI.TOTAL_MB >= 0.95) > 0 then
                           (select 3 || '|' || 3 || '|' || 'Check Service Overview.ASMDisk Monitor' || '|' ||
                                   'ASMInsufficient Disk Space' || '|' ||
-                                  '<center>[<a class="noLink" href="#asm_diskgroup"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：ASMDisk Group Usage</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  '<center>[<a class="noLink" href="#asm_diskgroup"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:ASMDisk Group Usage</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13276,8 +13276,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                           AND D.FAILURES > 0
                                           AND D.LAST_DATE >= SYSDATE - 15)) > 0 then
                           (select 4 || '|' || 5 || '|' || 'Check Service Overview.JOBStatus' || '|' ||
-                                  'In Last MonthJOBErrors Occurred，Please check if business data is affectedJOB' || '|' ||
-                                  '<center>[<a class="noLink" href="#jobs_info"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Job Run Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'In Last MonthJOBErrors Occurred,Please check if business data is affectedJOB' || '|' ||
+                                  '<center>[<a class="noLink" href="#jobs_info"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Job Run Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13285,8 +13285,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                 select case
                          when (SELECT count(1) FROM v$backup_set) < 2 then
                           (select 5 || '|' || 2 || '|' || 'Check Service Details.RMANInfo' || '|' ||
-                                  'Database NoRMANBackup Info，Strongly recommended to backup the database' || '|' ||
-                                  '<center>[<a class="noLink" href="#database_rmanbackinfo"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：RMANInfo</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Database NoRMANBackup Info,Strongly recommended to backup the database' || '|' ||
+                                  '<center>[<a class="noLink" href="#database_rmanbackinfo"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:RMANInfo</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13304,8 +13304,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                        having count(*) > 10)) > 0 then
                           (select 6 || '|' || 2 || '|' ||
                                   'Check Service Details.SQLMonitor.Unused Bind VariablesSQLStatement' || '|' ||
-                                  'Unused Bind VariablesSQLStatement will causelibrarycacheHit Ratio Decrease，Reduce System Perf' || '|' ||
-                                  '<center>[<a class="noLink" href="#sql_no_bind"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Unused Bind VariablesSQLStatement</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Unused Bind VariablesSQLStatement will causelibrarycacheHit Ratio Decrease,Reduce System Perf' || '|' ||
+                                  '<center>[<a class="noLink" href="#sql_no_bind"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Unused Bind VariablesSQLStatement</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13359,8 +13359,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                   AND (ERROR IS NOT NULL OR STATUS <> 'VALID' OR
                                       CURRENT_SEQ# > APPLIED_SEQ# + 2)) > 0 then
                           (select 7 || '|' || 2 || '|' || 'Check Service Details.DGLibrary' || '|' ||
-                                  'DatabaseDGDB Running Abnormal，Click right link to viewDGDB Details' || '|' ||
-                                  '<center>[<a class="noLink" href="#link_dginfo"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：DGLibrary</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'DatabaseDGDB Running Abnormal,Click right link to viewDGDB Details' || '|' ||
+                                  '<center>[<a class="noLink" href="#link_dginfo"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:DGLibrary</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13372,8 +13372,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                 WHERE OWNER NOT IN ('PUBLIC')
                                   AND STATUS <> 'VALID') > 0 then
                           (select 8 || '|' || 4 || '|' || 'Database Objects.Invalid Object' || '|' ||
-                                  'Invalid objects in database，Recommend Recompile' || '|' ||
-                                  '<center>[<a class="noLink" href="#database_invalidobjects"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Invalid Object</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Invalid objects in database,Recommend Recompile' || '|' ||
+                                  '<center>[<a class="noLink" href="#database_invalidobjects"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Invalid Object</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13391,7 +13391,7 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                 WHERE SIZE_M > 1024) > 0 then
                           (select 9 || '|' || 4 || '|' || 'Database Objects.Other Objects.Recycle Bin Status' || '|' ||
                                   'Useless objects in recycle bin' || '|' ||
-                                  '<center>[<a class="noLink" href="#dba_recycle_bin"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Recycle Bin Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  '<center>[<a class="noLink" href="#dba_recycle_bin"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Recycle Bin Status</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13406,7 +13406,7 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                   AND D.EVENT LIKE 'enq: SQ%') > 0 then
                           (select 10 || '|' || 2 || '|' ||
                                   'Database Objects.Other Objects.SequencecacheLess Than20' || '|' ||
-                                  'Database SequencecacheValue <20，May be accompanied byenq: SQ - contentionWait Event' || '|' ||
+                                  'Database SequencecacheValue <20,May be accompanied byenq: SQ - contentionWait Event' || '|' ||
                                   '<center>[<a class="noLink" href="#sequence_cache_20"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>SequencecacheLess Than20</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
@@ -13422,7 +13422,7 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                           (select 11 || '|' || 2 || '|' ||
                                   'Database Performance Analysis.Session.Exceed10Sessions unresponsive for hours' || '|' ||
                                   'Exceed10Sessions unresponsive for hours can be considered to bekillkill to free resources' || '|' ||
-                                  '<center>[<a class="noLink" href="#long_nofanying"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Exceed10Sessions unresponsive for hours</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  '<center>[<a class="noLink" href="#long_nofanying"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Exceed10Sessions unresponsive for hours</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13430,8 +13430,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                 select case
                          when (select count(*) from (SELECT g.inst_id,sum(pinhits) / sum(pins) FROM Gv$librarycache g group by g.inst_id having sum(pinhits) / sum(pins)<0.95)) >0 then
                           (select 12 || '|' || 2 || '|' || 'Database Performance Analysis.Memory Usage.Hit Ratio' || '|' ||
-                                  'Below 95%，Need to adjust application to use bind variables，Or adjust database parametershared_pool_sizeSize of' || '|' ||
-                                  '<center>[<a class="noLink" href="#library_cache_ratiosss"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：librarycache Overall Hit Ratio</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Below 95%,Need to adjust application to use bind variables,Or adjust database parametershared_pool_sizeSize of' || '|' ||
+                                  '<center>[<a class="noLink" href="#library_cache_ratiosss"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:librarycache Overall Hit Ratio</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13449,8 +13449,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
  and round((a.all_bytes - b.FREESIZ) / a.all_bytes, 2) > 0.98) > 0 then
                           (select 13 || '|' || 1 || '|' ||
                                   'Check Service Overview.Tablespace Status.Tablespace Status Info' || '|' ||
-                                  'If tablespace usage >98%，Consider increasing tablespace size' || '|' ||
-                                  '<center>[<a class="noLink" href="#tablespaces_info"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Tablespace Status Info</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'If tablespace usage >98%,Consider increasing tablespace size' || '|' ||
+                                  '<center>[<a class="noLink" href="#tablespaces_info"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Tablespace Status Info</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13490,8 +13490,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                         WHERE AA.AUTOTASK_STATUS = 'ENABLED')) <> (SELECT count(*)*8 FROM v$containers a WHERE a.NAME<>'PDB$SEED'  AND A.OPEN_MODE='READ WRITE' ) then
                           (select 14 || '|' || 2 || '|' ||
                                   'Database Performance Analysis.Statistics.Are statistics collected automatically' || '|' ||
-                                  'Database statistics automatic collection is not enabled，Strongly recommend enabling this feature' || '|' ||
-                                  '<center>[<a class="noLink" href="#statics_gatherflag"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Are statistics collected automatically</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Database statistics automatic collection is not enabled,Strongly recommend enabling this feature' || '|' ||
+                                  '<center>[<a class="noLink" href="#statics_gatherflag"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Are statistics collected automatically</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13505,8 +13505,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                                   and t.FILENAME LIKE '%' ||sys_context('USERENV', 'INSTANCE_NAME') || '%'
                                   AND t.ORIGINATING_TIMESTAMP >= sysdate - 7) > 0 then
                           (select 15 || '|' || 2 || '|' || 'Database Objects.Other Objects.Alert Log' || '|' ||
-                                  'Database Alert Log hasoraError，Please check alert log details' || '|' ||
-                                  '<center>[<a class="noLink" href="#link_alert_log"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Alert Log</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Database Alert Log hasoraError,Please check alert log details' || '|' ||
+                                  '<center>[<a class="noLink" href="#link_alert_log"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Alert Log</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13515,7 +13515,7 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                          when (SELECT COUNT(*) FROM v$pdbs a where a.OPEN_MODE in ('MOUNTED') or a.RESTRICTED='YES') > 0 then
                           (select 16 || '|' || 2 || '|' || 'Database Overall Summary.Database Basic Info.PDBStatus' || '|' ||
                                   'PDBStatus Incorrect' || '|' ||
-                                  '<center>[<a class="noLink" href="#pdb_overview"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：PDBStatus</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  '<center>[<a class="noLink" href="#pdb_overview"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:PDBStatus</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13523,8 +13523,8 @@ SELECT '<div align="center">' || rownuM || '</div>' ID,
                 select case
                          when (SELECT COUNT(*) FROM V$CONTROLFILE a) < 2 then
                           (select 17 || '|' || 2 || '|' || 'Check Service Overview.Tablespace Status.Control File' || '|' ||
-                                  'Control file not mirrored，Recommend mirroring control file' || '|' ||
-                                  '<center>[<a class="noLink" href="#control_files"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref：Control File</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
+                                  'Control file not mirrored,Recommend mirroring control file' || '|' ||
+                                  '<center>[<a class="noLink" href="#control_files"><font size=1 face="Courier New,Helvetica,sans-serif" color="#336699"><b>Ref:Control File</b></font></a>]</center><p>' CHECK_MESSAGE_DETAIL_LINK
                              from dual)
                        end
                   from dual
@@ -13581,17 +13581,17 @@ set heading off
 prompt <hr>
 prompt <hr>
 prompt <a name="awr_new_lastone_link"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● The LatestAWRReport </b></font><hr align="left" width="800">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- The LatestAWRReport </b></font><hr align="left" width="800">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript ： SELECT * FROM table(dbms_workload_repository.awr_report_html(&_dbid,&_instance_number,&_snap_id,&_snap_id1));  </font></b>
-prompt 　　 　　 　　 　　
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript : SELECT * FROM table(dbms_workload_repository.awr_report_html(&_dbid,&_instance_number,&_snap_id,&_snap_id1));  </font></b>
+prompt            
 
 
 
 SELECT * FROM table(dbms_workload_repository.awr_report_html(&_dbid,&_instance_number,&_snap_id,&_snap_id1));
 
-prompt 　　 　　 　　 　　
+prompt            
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>][<a class="noLink" href="#awr_new_lastone">Back toAWR</a>]</center><p>
 
@@ -13632,11 +13632,11 @@ set heading off
 prompt <hr>
 prompt <hr>
 prompt <a name="ASH_new_lastone"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● The LatestASHReport </b></font><hr align="left" width="800">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- The LatestASHReport </b></font><hr align="left" width="800">
 
  
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript ： SELECT * FROM table(dbms_workload_repository.ash_report_html(&_dbid,&_instance_number,(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id),(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id1))); </font> </b>
-prompt 　　 　　 　　 　　
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript : SELECT * FROM table(dbms_workload_repository.ash_report_html(&_dbid,&_instance_number,(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id),(SELECT a.end_interval_time FROM dba_hist_ash_snapshot a WHERE a.snap_id = &_ash_snap_id1))); </font> </b>
+prompt            
 
 
 SELECT *
@@ -13656,7 +13656,7 @@ SELECT *
                                                               &_instance_number)));
 
 
-prompt 　　 　　 　　 　　
+prompt            
 
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>] [<a class="noLink" href="#ash_lastone_info">Back toASH</a>]</center><p>
 
@@ -13700,15 +13700,15 @@ set heading off
 prompt <hr>
 prompt <hr>
 prompt <a name="sql_elasled_lastlongsqllink"></a>
-prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>● The one with longest execution timeSQLReport </b></font><hr align="left" width="800">
+prompt <font size="+1" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>- The one with longest execution timeSQLReport </b></font><hr align="left" width="800">
 
 
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript ： SELECT * FROM table(dbms_workload_repository.awr_sql_report_html(&_dbid,&_instance_number, &_snap_id,&_snap_id1, &_sqlid)) ; </font> </b>
-prompt 　　 　　 　　 　　
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: SQLScript : SELECT * FROM table(dbms_workload_repository.awr_sql_report_html(&_dbid,&_instance_number, &_snap_id,&_snap_id1, &_sqlid)) ; </font> </b>
+prompt            
 
 SELECT * FROM table(dbms_workload_repository.awr_sql_report_html(&_dbid,&_instance_number, &_snap_id,&_snap_id1, &_sqlid));
 
-prompt 　　 　　 　　 　　
+prompt            
 prompt <center>[<a class="noLink" href="#directory">Back to Contents</a>] [<a class="noLink" href="#sql_elasled_lastlongsql">Back toSQLPart</a>]</center><p>
 
 
@@ -13729,7 +13729,7 @@ prompt <font size=+2 color=darkgreen><b></b></font><hr>
 prompt <center><font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#663300"><b>Database Health Check Report End</b></font></center>
 
 prompt
-prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: End Time：&_date_time_end </font> </b>
+prompt <b><font face="Courier New"><font face="Courier New,Helvetica,sans-serif" color="#990000">NOTE</font>: End Time:&_date_time_end </font> </b>
 prompt
 
 prompt <a name="html_bottom_link"></a>
@@ -13800,7 +13800,7 @@ set markup html on ENTMAP OFF
 
 prompt <a name="sqlscripts_errors"></a>
 prompt <font size="+2" face="Courier New,Helvetica,Geneva,sans-serif" color="#336699"><b>Errors generated during health check script execution<hr align="left" width="450">
-prompt <font size="1" face="Courier New,Helvetica,Geneva,sans-serif" color="#990000">NOTE: This part is not part of the health check report content，Only for executor to debug script，Individual errors are normal</font>
+prompt <font size="1" face="Courier New,Helvetica,Geneva,sans-serif" color="#990000">NOTE: This part is not part of the health check report content,Only for executor to debug script,Individual errors are normal</font>
 
 
 CLEAR COLUMNS COMPUTES
@@ -13837,7 +13837,7 @@ SET MARKUP HTML OFF PREFORMAT OFF entmap on
 
 prompt 
 prompt Health check report generated in current directory(Please ensure currentOSUser has write permission on current directory): &_reporttitle..html
-prompt Health Check Script Finished！
+prompt Health Check Script Finished!
 
 
 exit
