@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Health Check Report</title>
+    <link rel="stylesheet" href="../report_styles.css">
+</head>
+<body>
+    <h1>Oracle Database Health Check Report</h1>
+    <div class="timestamp">Generated: 2026-01-17 11:23:51</div>
+
+    <h2>Database Information</h2>
+    <div class="info-box">
+        <p><strong>Database Name:</strong> ORCL</p>
+        <p><strong>Open Mode:</strong> READ WRITE</p>
+        <p><strong>Role:</strong> PRIMARY</p>
+        <p><strong>Version:</strong> Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production</p>
+        <p><strong>Instance 1:</strong> ORCL1 @ rac1</p>
+        <p><strong>Instance 2:</strong> ORCL2 @ rac2</p>
+        <p><strong>Database Size:</strong> 1.41 GB</p>
+        <p><strong>MAX_PDB_STORAGE:</strong> UNLIMITED</p>
+
+    </div>
+
+    <h2>Session Statistics</h2>
+    <table>
+        <tr><th>Status</th><th>Count</th></tr>
+        <tr><td>INACTIVE</td><td>5</td></tr>
+        <tr><td>ACTIVE</td><td>77</td></tr>
+
+    </table>
+
+    <h2>Tablespace Usage</h2>
+    <table>
+        <tr><th>Tablespace</th><th>Used (GB)</th><th>Total (GB)</th><th>% Used</th></tr>
+        <tr><td>SYSTEM</td><td>1.12</td><td>14.07</td><td>7.98%</td></tr>
+        <tr><td>SYSAUX</td><td>0.79</td><td>13.78</td><td>5.72%</td></tr>
+        <tr><td>UNDOTBS1</td><td>0.72</td><td>32</td><td>2.26%</td></tr>
+        <tr><td>UNDOTBS2</td><td>0.01</td><td>32</td><td>0.02%</td></tr>
+        <tr><td>USERS</td><td>0</td><td>12.95</td><td>0.02%</td></tr>
+        <tr><td>TEMP</td><td>0</td><td>13.21</td><td>0%</td></tr>
+
+    </table>
+
+    <h2>Pluggable Databases</h2>
+    <table>
+        <tr><th>PDB Name</th><th>Open Mode</th><th>Restricted</th><th>Open Time</th><th>Size (GB)</th></tr>
+
+    </table>
+
+    <h2>Top 10 Wait Events</h2>
+    <table>
+        <tr><th>Event</th><th>Total Waits</th><th>Time Waited (cs)</th><th>Avg Wait (cs)</th></tr>
+        <tr><td>db file sequential read</td><td>7063</td><td>1065</td><td>0.15</td></tr>
+        <tr><td>external table read</td><td>1</td><td>1035</td><td>1034.74</td></tr>
+        <tr><td>oracle thread bootstrap</td><td>118</td><td>1019</td><td>8.64</td></tr>
+        <tr><td>name-service call wait</td><td>58</td><td>683</td><td>11.78</td></tr>
+        <tr><td>control file sequential read</td><td>3013</td><td>498</td><td>0.17</td></tr>
+        <tr><td>rdbms ipc reply</td><td>129</td><td>460</td><td>3.57</td></tr>
+        <tr><td>enq: CF - contention</td><td>26</td><td>456</td><td>17.53</td></tr>
+        <tr><td>gc cr grant 2-way</td><td>3092</td><td>413</td><td>0.13</td></tr>
+        <tr><td>control file heartbeat</td><td>1</td><td>403</td><td>403</td></tr>
+        <tr><td>ASMB cookie valid check</td><td>1</td><td>362</td><td>361.52</td></tr>
+
+    </table>
+
+    <h2>Database Load (AAS - Last 5 Minutes)</h2>
+    <div class="info-box">
+        <p><strong>Average Active Sessions:</strong> <span class="fail">43</span> (CRITICAL)</p>
+        <p><em>AAS > 10 = CRITICAL, AAS > 5 = WARNING, AAS ≤ 5 = OK</em></p>
+    </div>
+
+    <h2>Top 10 SQL by CPU Time</h2>
+    <table>
+        <tr><th>SQL ID</th><th>CPU (Seconds)</th><th>Executions</th><th>CPU per Exec (s)</th></tr>
+        <tr><td>fhf8upax5cxsz</td><td>3.16</td><td>1</td><td>3.16</td></tr>
+        <tr><td>cf4d40zk2gq2w</td><td>2.71</td><td>1</td><td>2.71</td></tr>
+        <tr><td>0gwc9vhhygvbb</td><td>0.97</td><td>1</td><td>0.97</td></tr>
+        <tr><td>atwuyuvqkf27w</td><td>0.9</td><td>1</td><td>0.9</td></tr>
+        <tr><td>0za9fv0j1vgkk</td><td>0.89</td><td>0</td><td>N/A</td></tr>
+        <tr><td>0za9fv0j1vgkk</td><td>0.76</td><td>0</td><td>N/A</td></tr>
+        <tr><td>atwuyuvqkf27w</td><td>0.72</td><td>0</td><td>N/A</td></tr>
+        <tr><td>5ca3fp27s4tny</td><td>0.54</td><td>1</td><td>0.54</td></tr>
+        <tr><td>0x5dqrgmv9huc</td><td>0.5</td><td>4</td><td>0.13</td></tr>
+        <tr><td>cz8wbmy7k5bxn</td><td>0.45</td><td>1</td><td>0.45</td></tr>
+    </table>
+
+    <h2>Top 10 SQL by Disk Reads</h2>
+    <table>
+        <tr><th>SQL ID</th><th>Disk Reads</th><th>Executions</th><th>Reads per Exec</th></tr>
+        <tr><td>cf4d40zk2gq2w</td><td>9391</td><td>1</td><td>9391</td></tr>
+        <tr><td>5ca3fp27s4tny</td><td>4572</td><td>1</td><td>4572</td></tr>
+        <tr><td>fhf8upax5cxsz</td><td>641</td><td>1</td><td>641</td></tr>
+        <tr><td>03guhbfpak0w7</td><td>604</td><td>94</td><td>6.43</td></tr>
+        <tr><td>a3jpjzh7mtwwp</td><td>265</td><td>94</td><td>2.82</td></tr>
+        <tr><td>49s332uhbnsma</td><td>207</td><td>30</td><td>6.9</td></tr>
+        <tr><td>2sxqgx5hx76qr</td><td>199</td><td>852</td><td>0.23</td></tr>
+        <tr><td>3un99a0zwp4vd</td><td>185</td><td>199</td><td>0.93</td></tr>
+        <tr><td>03guhbfpak0w7</td><td>168</td><td>36</td><td>4.67</td></tr>
+        <tr><td>acmvv4fhdc9zh</td><td>134</td><td>1230</td><td>0.11</td></tr>
+    </table>
+
+    <h2>Invalid Objects</h2>
+    <div class="info-box">
+        <p class="pass">✓ No invalid objects found</p>
+    </div>
+
+    <h2>Alert Log Errors (Last Hour)</h2>
+    <table>
+        <tr><th>Error Time</th><th>Message</th></tr>
+        <tr class='fail'><td>2026-01-17 11:15:48</td><td>ORA-65011 signalled during: alter pluggable database pd1 open instances=ALL...
+</td></tr>
+    </table>
+
+    <h2>Long Running Queries (> 5 Minutes)</h2>
+    <div class="info-box">
+        <p class="pass">✓ No long-running queries detected</p>
+    </div>
+
+    <h2>Temporary Tablespace Usage</h2>
+    <table>
+        <tr><th>Tablespace</th><th>Used (GB)</th><th>Free (GB)</th><th>% Used</th></tr>
+        <tr class='fail'><td>TEMP</td><td>0.79</td><td>0</td><td>100%</td></tr>
+    </table>
+
+    <h2>RAC: Global Cache Waits (Last Hour)</h2>
+    <table>
+        <tr><th>Event</th><th>Samples</th><th>% of Total</th></tr>
+        <tr class=''><td>gc current block 2-way</td><td>9</td><td>64.29%</td></tr>
+        <tr class=''><td>gc cr grant 2-way</td><td>4</td><td>28.57%</td></tr>
+        <tr class=''><td>gc cr request</td><td>1</td><td>7.14%</td></tr>
+    </table>
+
+    <h2>RAC: GC Waits by Instance (Last Hour)</h2>
+    <table>
+        <tr><th>Instance ID</th><th>Event</th><th>Wait Count</th></tr>
+        <tr class=''><td>1</td><td>gc cr grant 2-way</td><td>3</td></tr>
+        <tr class=''><td>1</td><td>gc cr request</td><td>1</td></tr>
+        <tr class=''><td>2</td><td>gc current block 2-way</td><td>9</td></tr>
+        <tr class=''><td>2</td><td>gc cr grant 2-way</td><td>1</td></tr>
+    </table>
+
+    <h2>RAC: Interconnect Activity</h2>
+    <table>
+        <tr><th>Instance ID</th><th>Metric</th><th>MB</th></tr>
+        <tr class=''><td>1</td><td>gc cr blocks received</td><td>0</td></tr>
+        <tr class=''><td>1</td><td>gc cr blocks served</td><td>0</td></tr>
+        <tr class=''><td>1</td><td>gc current blocks received</td><td>0</td></tr>
+        <tr class=''><td>1</td><td>gc current blocks served</td><td>0.01</td></tr>
+        <tr class=''><td>2</td><td>gc cr blocks received</td><td>0</td></tr>
+        <tr class=''><td>2</td><td>gc cr blocks served</td><td>0</td></tr>
+        <tr class=''><td>2</td><td>gc current blocks received</td><td>0.01</td></tr>
+        <tr class=''><td>2</td><td>gc current blocks served</td><td>0</td></tr>
+    </table>
+
+    <h2>RAC: GES Blocking Sessions (Last Hour)</h2>
+    <table>
+        <tr><th>Blocking Session</th><th>Blocking Instance</th><th>Blocks</th><th>First Seen</th><th>Last Seen</th></tr>
+        <tr class=''><td>13</td><td>1</td><td>10</td><td>2026-01-17 11:14</td><td>2026-01-17 11:15</td></tr>
+        <tr class=''><td>2</td><td>2</td><td>4</td><td>2026-01-17 11:15</td><td>2026-01-17 11:15</td></tr>
+        <tr class=''><td>29</td><td>2</td><td>4</td><td>2026-01-17 11:15</td><td>2026-01-17 11:15</td></tr>
+        <tr class=''><td>269</td><td>0</td><td>3</td><td>2026-01-17 11:14</td><td>2026-01-17 11:14</td></tr>
+        <tr class=''><td>389</td><td>2</td><td>3</td><td>2026-01-17 11:18</td><td>2026-01-17 11:20</td></tr>
+        <tr class=''><td>13</td><td>2</td><td>3</td><td>2026-01-17 11:14</td><td>2026-01-17 11:15</td></tr>
+        <tr class=''><td>388</td><td>0</td><td>3</td><td>2026-01-17 11:14</td><td>2026-01-17 11:14</td></tr>
+        <tr class=''><td>279</td><td>2</td><td>2</td><td>2026-01-17 11:15</td><td>2026-01-17 11:15</td></tr>
+        <tr class=''><td>14</td><td>2</td><td>2</td><td>2026-01-17 11:15</td><td>2026-01-17 11:23</td></tr>
+        <tr class=''><td>2</td><td>0</td><td>2</td><td>2026-01-17 11:14</td><td>2026-01-17 11:14</td></tr>
+    </table>
+
+    <h2>RAC: CPU Utilization per Instance</h2>
+    <table>
+        <tr><th>Instance ID</th><th>CPU Busy (secs)</th><th>Total CPU (secs)</th><th>CPU Util %</th></tr>
+        <tr class=''><td>1</td><td>393.85</td><td>2210.66</td><td>17.82%</td></tr>
+        <tr class=''><td>2</td><td>380.68</td><td>2216.07</td><td>17.18%</td></tr>
+    </table>
+
+    <div class="footer">
+        <p>Generated by Oracle PDB Management Toolkit</p>
+    </div>
+</body>
+</html>

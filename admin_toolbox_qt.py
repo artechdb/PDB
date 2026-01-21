@@ -46,6 +46,12 @@ class DatabaseWorker(QThread):
                 result = self.perform_pdb_clone()
             elif self.operation == "pdb_postcheck":
                 result = self.perform_pdb_postcheck()
+            elif self.operation == "test_health_connection":
+                result = self.test_health_connection()
+            elif self.operation == "test_source_connection":
+                result = self.test_clone_connection("source")
+            elif self.operation == "test_target_connection":
+                result = self.test_clone_connection("target")
             else:
                 self.finished.emit(False, f"Unknown operation: {self.operation}")
                 return
@@ -131,6 +137,165 @@ class DatabaseWorker(QThread):
         status = "All checks PASSED" if all_passed else "Some checks FAILED"
 
         return f"PDB clone postcheck completed.\nStatus: {status}\nReport: {report_path}"
+
+    def test_health_connection(self):
+        """Test database connection for health check"""
+        import oracledb
+
+        connection_mode = self.params.get('connection_mode')
+        self.progress.emit("Testing database connection...")
+
+        try:
+            if connection_mode == 'external_auth':
+                # Check if TNS alias or hostname/port/service
+                if 'db_name' in self.params and not self.params.get('hostname'):
+                    # TNS alias
+                    dsn = self.params['db_name']
+                    self.progress.emit(f"Connecting using TNS alias: {dsn} (External Auth)")
+                    conn = oracledb.connect(dsn=dsn, externalauth=True)
+                else:
+                    # Hostname/port/service
+                    hostname = self.params['hostname']
+                    port = self.params['port']
+                    service = self.params['service']
+                    dsn = f"{hostname}:{port}/{service}"
+                    self.progress.emit(f"Connecting to: {dsn} (External Auth)")
+                    conn = oracledb.connect(dsn=dsn, externalauth=True)
+            else:
+                # Username/password
+                hostname = self.params['hostname']
+                port = self.params['port']
+                service = self.params['service']
+                username = self.params['username']
+                password = self.params['password']
+                dsn = f"{hostname}:{port}/{service}"
+                self.progress.emit(f"Connecting to: {dsn} as {username}")
+                conn = oracledb.connect(user=username, password=password, dsn=dsn)
+
+            # Get connection info
+            cursor = conn.cursor()
+
+            # Get database name and version
+            cursor.execute("SELECT name, version_full FROM v$database, v$instance")
+            row = cursor.fetchone()
+            db_name = row[0] if row else "Unknown"
+            db_version = row[1] if row else "Unknown"
+
+            # Get instance info
+            cursor.execute("SELECT instance_name, host_name, status FROM v$instance")
+            inst_row = cursor.fetchone()
+            instance_name = inst_row[0] if inst_row else "Unknown"
+            host_name = inst_row[1] if inst_row else "Unknown"
+            status = inst_row[2] if inst_row else "Unknown"
+
+            # Get current user
+            cursor.execute("SELECT user FROM dual")
+            current_user = cursor.fetchone()[0]
+
+            cursor.close()
+            conn.close()
+
+            self.progress.emit(f"Connection successful!")
+            self.progress.emit(f"  Database: {db_name}")
+            self.progress.emit(f"  Version: {db_version}")
+            self.progress.emit(f"  Instance: {instance_name}")
+            self.progress.emit(f"  Host: {host_name}")
+            self.progress.emit(f"  Status: {status}")
+            self.progress.emit(f"  Connected as: {current_user}")
+
+            return f"Connection successful!\n\nDatabase: {db_name}\nVersion: {db_version}\nInstance: {instance_name}\nHost: {host_name}\nStatus: {status}\nConnected as: {current_user}"
+
+        except oracledb.Error as e:
+            error_obj, = e.args
+            self.progress.emit(f"Connection FAILED!")
+            self.progress.emit(f"  Oracle Error Code: {error_obj.code}")
+            self.progress.emit(f"  Error Message: {error_obj.message}")
+            raise Exception(f"Oracle Error {error_obj.code}: {error_obj.message}")
+
+    def test_clone_connection(self, target_type):
+        """Test database connection for PDB clone (source or target)"""
+        import oracledb
+
+        connection_mode = self.params.get('connection_mode')
+
+        if target_type == "source":
+            scan = self.params['source_scan']
+            port = self.params['source_port']
+            cdb = self.params['source_cdb']
+            username = self.params.get('source_username')
+            password = self.params.get('source_password')
+            label = "Source CDB"
+        else:
+            scan = self.params['target_scan']
+            port = self.params['target_port']
+            cdb = self.params['target_cdb']
+            username = self.params.get('target_username')
+            password = self.params.get('target_password')
+            label = "Target CDB"
+
+        dsn = f"{scan}:{port}/{cdb}"
+        self.progress.emit(f"Testing {label} connection...")
+        self.progress.emit(f"DSN: {dsn}")
+
+        try:
+            if connection_mode == 'external_auth':
+                self.progress.emit(f"Connecting using External Authentication...")
+                conn = oracledb.connect(dsn=dsn, externalauth=True)
+            else:
+                self.progress.emit(f"Connecting as user: {username}")
+                conn = oracledb.connect(user=username, password=password, dsn=dsn)
+
+            cursor = conn.cursor()
+
+            # Get database name and version
+            cursor.execute("SELECT name, version_full FROM v$database, v$instance")
+            row = cursor.fetchone()
+            db_name = row[0] if row else "Unknown"
+            db_version = row[1] if row else "Unknown"
+
+            # Get instance info
+            cursor.execute("SELECT instance_name, host_name, status FROM v$instance")
+            inst_row = cursor.fetchone()
+            instance_name = inst_row[0] if inst_row else "Unknown"
+            host_name = inst_row[1] if inst_row else "Unknown"
+            status = inst_row[2] if inst_row else "Unknown"
+
+            # Get current container
+            cursor.execute("SELECT sys_context('USERENV', 'CON_NAME') FROM dual")
+            container = cursor.fetchone()[0]
+
+            # Get current user
+            cursor.execute("SELECT user FROM dual")
+            current_user = cursor.fetchone()[0]
+
+            # Get PDB list
+            cursor.execute("SELECT name, open_mode FROM v$pdbs ORDER BY con_id")
+            pdbs = cursor.fetchall()
+
+            cursor.close()
+            conn.close()
+
+            self.progress.emit(f"{label} connection successful!")
+            self.progress.emit(f"  Database: {db_name}")
+            self.progress.emit(f"  Version: {db_version}")
+            self.progress.emit(f"  Instance: {instance_name}")
+            self.progress.emit(f"  Host: {host_name}")
+            self.progress.emit(f"  Status: {status}")
+            self.progress.emit(f"  Container: {container}")
+            self.progress.emit(f"  Connected as: {current_user}")
+            self.progress.emit(f"  PDBs found: {len(pdbs)}")
+            for pdb_name, pdb_mode in pdbs:
+                self.progress.emit(f"    - {pdb_name}: {pdb_mode}")
+
+            pdb_list = "\n".join([f"  - {p[0]}: {p[1]}" for p in pdbs])
+            return f"{label} connection successful!\n\nDatabase: {db_name}\nVersion: {db_version}\nInstance: {instance_name}\nHost: {host_name}\nStatus: {status}\nContainer: {container}\nConnected as: {current_user}\n\nPDBs ({len(pdbs)}):\n{pdb_list}"
+
+        except oracledb.Error as e:
+            error_obj, = e.args
+            self.progress.emit(f"{label} connection FAILED!")
+            self.progress.emit(f"  Oracle Error Code: {error_obj.code}")
+            self.progress.emit(f"  Error Message: {error_obj.message}")
+            raise Exception(f"Oracle Error {error_obj.code}: {error_obj.message}")
 
 
 class OraclePDBToolkit(QMainWindow):
@@ -311,11 +476,22 @@ class OraclePDBToolkit(QMainWindow):
         self.health_external_auth_radio.toggled.connect(self.toggle_health_connection_fields)
         self.health_user_pass_radio.toggled.connect(self.toggle_health_connection_fields)
 
+        # Action buttons
+        button_layout = QHBoxLayout()
+
+        # Test Connection button
+        self.health_test_btn = QPushButton("Test Connection")
+        self.health_test_btn.setStyleSheet("background-color: #6c757d; color: white; padding: 10px; font-weight: bold;")
+        self.health_test_btn.clicked.connect(self.test_health_connection)
+        button_layout.addWidget(self.health_test_btn)
+
         # Run button
         self.health_run_btn = QPushButton("Generate Health Report")
         self.health_run_btn.setStyleSheet("background-color: #0066cc; color: white; padding: 10px; font-weight: bold;")
         self.health_run_btn.clicked.connect(self.run_health_check)
-        layout.addWidget(self.health_run_btn)
+        button_layout.addWidget(self.health_run_btn)
+
+        layout.addLayout(button_layout)
 
         layout.addStretch()
 
@@ -488,6 +664,21 @@ class OraclePDBToolkit(QMainWindow):
         self.clone_external_auth_radio.toggled.connect(self.toggle_clone_connection_fields)
         self.clone_user_pass_radio.toggled.connect(self.toggle_clone_connection_fields)
 
+        # Connection test buttons
+        test_button_layout = QHBoxLayout()
+
+        self.test_source_btn = QPushButton("Test Source Connection")
+        self.test_source_btn.setStyleSheet("background-color: #6c757d; color: white; padding: 8px; font-weight: bold;")
+        self.test_source_btn.clicked.connect(self.test_source_connection)
+        test_button_layout.addWidget(self.test_source_btn)
+
+        self.test_target_btn = QPushButton("Test Target Connection")
+        self.test_target_btn.setStyleSheet("background-color: #6c757d; color: white; padding: 8px; font-weight: bold;")
+        self.test_target_btn.clicked.connect(self.test_target_connection)
+        test_button_layout.addWidget(self.test_target_btn)
+
+        layout.addLayout(test_button_layout)
+
         # Action buttons
         button_layout = QHBoxLayout()
 
@@ -517,14 +708,20 @@ class OraclePDBToolkit(QMainWindow):
 
     def disable_buttons(self):
         """Disable all action buttons during operations"""
+        self.health_test_btn.setEnabled(False)
         self.health_run_btn.setEnabled(False)
+        self.test_source_btn.setEnabled(False)
+        self.test_target_btn.setEnabled(False)
         self.precheck_btn.setEnabled(False)
         self.clone_btn.setEnabled(False)
         self.postcheck_btn.setEnabled(False)
 
     def enable_buttons(self):
         """Enable all action buttons after operations"""
+        self.health_test_btn.setEnabled(True)
         self.health_run_btn.setEnabled(True)
+        self.test_source_btn.setEnabled(True)
+        self.test_target_btn.setEnabled(True)
         self.precheck_btn.setEnabled(True)
         self.clone_btn.setEnabled(True)
         self.postcheck_btn.setEnabled(True)
@@ -585,6 +782,146 @@ class OraclePDBToolkit(QMainWindow):
         self.disable_buttons()
 
         self.worker = DatabaseWorker("health_check", params)
+        self.worker.progress.connect(self.log)
+        self.worker.finished.connect(self.on_operation_finished)
+        self.worker.start()
+
+    def test_health_connection(self):
+        """Test database connection for health check"""
+        params = {}
+
+        if self.health_external_auth_radio.isChecked():
+            # External authentication mode
+            tns_alias = self.health_ext_tns.text().strip()
+            hostname = self.health_ext_hostname.text().strip()
+            port = self.health_ext_port.text().strip()
+            service = self.health_ext_service.text().strip()
+
+            params['connection_mode'] = 'external_auth'
+
+            # Check if TNS alias is provided
+            if tns_alias:
+                params['db_name'] = tns_alias
+                self.log(f"Testing connection to: {tns_alias} (External Auth - TNS)")
+            elif hostname and port and service:
+                # Use hostname/port/service
+                params['hostname'] = hostname
+                params['port'] = port
+                params['service'] = service
+                params['db_name'] = f"{hostname}:{port}/{service}"
+                self.log(f"Testing connection to: {service} at {hostname}:{port} (External Auth)")
+            else:
+                QMessageBox.warning(self, "Input Required",
+                                  "Please provide either:\n"
+                                  "- TNS Alias, OR\n"
+                                  "- Hostname + Port + Service Name")
+                return
+
+        else:
+            # Username/password mode
+            hostname = self.health_hostname.text().strip()
+            port = self.health_port.text().strip()
+            service = self.health_service.text().strip()
+            username = self.health_username.text().strip()
+            password = self.health_password.text().strip()
+
+            if not all([hostname, port, service, username, password]):
+                QMessageBox.warning(self, "Input Required",
+                                  "Please provide all connection details:\n"
+                                  "- Hostname\n- Port\n- Service Name\n- Username\n- Password")
+                return
+
+            params['connection_mode'] = 'user_pass'
+            params['hostname'] = hostname
+            params['port'] = port
+            params['service'] = service
+            params['username'] = username
+            params['password'] = password
+            self.log(f"Testing connection to: {service} at {hostname}:{port} (User: {username})")
+
+        self.disable_buttons()
+
+        self.worker = DatabaseWorker("test_health_connection", params)
+        self.worker.progress.connect(self.log)
+        self.worker.finished.connect(self.on_operation_finished)
+        self.worker.start()
+
+    def test_source_connection(self):
+        """Test source database connection for PDB clone"""
+        source_scan = self.source_scan.text().strip()
+        source_port = self.source_port.text().strip()
+        source_cdb = self.source_cdb.text().strip()
+
+        if not all([source_scan, source_port, source_cdb]):
+            QMessageBox.warning(self, "Input Required",
+                              "Please provide source connection details:\n"
+                              "- Source SCAN Host\n- Port\n- Source CDB")
+            return
+
+        params = {
+            'connection_mode': 'external_auth' if self.clone_external_auth_radio.isChecked() else 'user_pass',
+            'source_scan': source_scan,
+            'source_port': source_port,
+            'source_cdb': source_cdb
+        }
+
+        # Add credentials if username/password mode
+        if self.clone_user_pass_radio.isChecked():
+            source_user = self.source_username.text().strip()
+            source_pass = self.source_password.text().strip()
+
+            if not all([source_user, source_pass]):
+                QMessageBox.warning(self, "Credentials Required",
+                                  "Please provide source database username and password")
+                return
+
+            params['source_username'] = source_user
+            params['source_password'] = source_pass
+
+        self.log(f"Testing source connection to: {source_scan}:{source_port}/{source_cdb}")
+        self.disable_buttons()
+
+        self.worker = DatabaseWorker("test_source_connection", params)
+        self.worker.progress.connect(self.log)
+        self.worker.finished.connect(self.on_operation_finished)
+        self.worker.start()
+
+    def test_target_connection(self):
+        """Test target database connection for PDB clone"""
+        target_scan = self.target_scan.text().strip()
+        target_port = self.target_port.text().strip()
+        target_cdb = self.target_cdb.text().strip()
+
+        if not all([target_scan, target_port, target_cdb]):
+            QMessageBox.warning(self, "Input Required",
+                              "Please provide target connection details:\n"
+                              "- Target SCAN Host\n- Port\n- Target CDB")
+            return
+
+        params = {
+            'connection_mode': 'external_auth' if self.clone_external_auth_radio.isChecked() else 'user_pass',
+            'target_scan': target_scan,
+            'target_port': target_port,
+            'target_cdb': target_cdb
+        }
+
+        # Add credentials if username/password mode
+        if self.clone_user_pass_radio.isChecked():
+            target_user = self.target_username.text().strip()
+            target_pass = self.target_password.text().strip()
+
+            if not all([target_user, target_pass]):
+                QMessageBox.warning(self, "Credentials Required",
+                                  "Please provide target database username and password")
+                return
+
+            params['target_username'] = target_user
+            params['target_password'] = target_pass
+
+        self.log(f"Testing target connection to: {target_scan}:{target_port}/{target_cdb}")
+        self.disable_buttons()
+
+        self.worker = DatabaseWorker("test_target_connection", params)
         self.worker.progress.connect(self.log)
         self.worker.finished.connect(self.on_operation_finished)
         self.worker.start()
