@@ -1,0 +1,14 @@
+# PDB Clone Configuration File
+# Format: source_cdb|source_pdb|source_host|target_cdb|target_pdb|target_host
+#
+# Notes:
+# - Host can include port: hostname:port (default port is 1521 if not specified)
+# - Lines starting with # are comments and will be ignored
+# - First non-comment, non-header line will be used
+#
+# Example entries:
+# PRODCDB|PRODPDB|prod-scan.example.com:1521|DEVCDB|DEVPDB|dev-scan.example.com:1521
+# ORCL|SALESPDB|dbserver1:1521|ORCL|SALESPDB_COPY|dbserver2:1521
+
+# Your configuration (uncomment and modify):
+# source_cdb|source_pdb|source_host|target_cdb|target_pdb|target_host

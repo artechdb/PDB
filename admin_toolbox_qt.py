@@ -16,7 +16,7 @@ from datetime import datetime
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QPushButton, QLabel, QLineEdit,
                              QTextEdit, QGroupBox, QMessageBox, QTabWidget,
-                             QRadioButton, QButtonGroup)
+                             QRadioButton, QButtonGroup, QFileDialog)
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QFont
 
@@ -513,6 +513,109 @@ class OraclePDBToolkit(QMainWindow):
             self.source_credentials_widget.setVisible(True)
             self.target_credentials_widget.setVisible(True)
 
+    def browse_config_file(self):
+        """Open file dialog to select configuration file"""
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Configuration File",
+            "",
+            "Text Files (*.txt);;CSV Files (*.csv);;All Files (*.*)"
+        )
+        if file_path:
+            self.config_file_path.setText(file_path)
+            self.load_config_btn.setEnabled(True)
+            self.log(f"Configuration file selected: {file_path}")
+
+    def load_config_file(self):
+        """Load and parse configuration file, populate form fields"""
+        file_path = self.config_file_path.text().strip()
+        if not file_path:
+            QMessageBox.warning(self, "No File Selected", "Please select a configuration file first.")
+            return
+
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+
+            # Find the first non-empty, non-comment line with data
+            config_line = None
+            for line in lines:
+                line = line.strip()
+                # Skip empty lines and comments
+                if not line or line.startswith('#') or line.startswith('//'):
+                    continue
+                # Skip header line if it looks like a header
+                if line.lower().startswith('source_cdb') or line.lower().startswith('sourcecdb'):
+                    continue
+                config_line = line
+                break
+
+            if not config_line:
+                QMessageBox.warning(self, "Empty File",
+                                  "No configuration data found in the file.\n\n"
+                                  "Expected format:\n"
+                                  "source_cdb|source_pdb|source_host|target_cdb|target_pdb|target_host")
+                return
+
+            # Parse the configuration line (pipe-delimited)
+            parts = config_line.split('|')
+            if len(parts) < 6:
+                QMessageBox.warning(self, "Invalid Format",
+                                  f"Configuration line has {len(parts)} fields, expected 6.\n\n"
+                                  "Expected format:\n"
+                                  "source_cdb|source_pdb|source_host|target_cdb|target_pdb|target_host\n\n"
+                                  f"Found: {config_line}")
+                return
+
+            # Extract values (strip whitespace)
+            source_cdb = parts[0].strip()
+            source_pdb = parts[1].strip()
+            source_host = parts[2].strip()
+            target_cdb = parts[3].strip()
+            target_pdb = parts[4].strip()
+            target_host = parts[5].strip()
+
+            # Parse host to extract hostname and port if present
+            # Format could be: hostname, hostname:port, or just hostname
+            def parse_host(host_str):
+                """Parse host string to extract hostname and port"""
+                if ':' in host_str:
+                    parts = host_str.split(':')
+                    return parts[0], parts[1] if len(parts) > 1 else '1521'
+                return host_str, '1521'
+
+            source_hostname, source_port = parse_host(source_host)
+            target_hostname, target_port = parse_host(target_host)
+
+            # Populate the form fields
+            self.source_scan.setText(source_hostname)
+            self.source_port.setText(source_port)
+            self.source_cdb.setText(source_cdb)
+            self.source_pdb.setText(source_pdb)
+
+            self.target_scan.setText(target_hostname)
+            self.target_port.setText(target_port)
+            self.target_cdb.setText(target_cdb)
+            self.target_pdb.setText(target_pdb)
+
+            # Log success
+            self.log(f"Configuration loaded successfully from: {file_path}")
+            self.log(f"  Source: {source_pdb}@{source_hostname}:{source_port}/{source_cdb}")
+            self.log(f"  Target: {target_pdb}@{target_hostname}:{target_port}/{target_cdb}")
+
+            QMessageBox.information(self, "Configuration Loaded",
+                                   f"Configuration loaded successfully!\n\n"
+                                   f"Source: {source_pdb}@{source_hostname}:{source_port}/{source_cdb}\n"
+                                   f"Target: {target_pdb}@{target_hostname}:{target_port}/{target_cdb}")
+
+        except FileNotFoundError:
+            QMessageBox.critical(self, "File Not Found", f"Configuration file not found:\n{file_path}")
+        except PermissionError:
+            QMessageBox.critical(self, "Permission Denied", f"Cannot read configuration file:\n{file_path}")
+        except Exception as e:
+            QMessageBox.critical(self, "Error Loading File", f"Error loading configuration file:\n{str(e)}")
+            self.log(f"ERROR loading config file: {str(e)}")
+
     def setup_clone_tab(self):
         """Setup PDB Clone tab"""
         layout = QVBoxLayout(self.clone_tab)
@@ -534,6 +637,37 @@ class OraclePDBToolkit(QMainWindow):
 
         method_group.setLayout(method_layout)
         layout.addWidget(method_group)
+
+        # File upload section for configuration
+        upload_group = QGroupBox("Load Configuration from File (Optional)")
+        upload_layout = QVBoxLayout()
+
+        # File format hint
+        format_hint = QLabel("File format: source_cdb|source_pdb|source_host|target_cdb|target_pdb|target_host")
+        format_hint.setStyleSheet("color: #666; font-style: italic; font-size: 11px;")
+        upload_layout.addWidget(format_hint)
+
+        # File path and browse button
+        file_row = QHBoxLayout()
+        self.config_file_path = QLineEdit()
+        self.config_file_path.setPlaceholderText("Select configuration file...")
+        self.config_file_path.setReadOnly(True)
+        file_row.addWidget(self.config_file_path)
+
+        self.browse_btn = QPushButton("Browse...")
+        self.browse_btn.setStyleSheet("padding: 5px 15px;")
+        self.browse_btn.clicked.connect(self.browse_config_file)
+        file_row.addWidget(self.browse_btn)
+
+        self.load_config_btn = QPushButton("Load")
+        self.load_config_btn.setStyleSheet("background-color: #5bc0de; color: white; padding: 5px 15px; font-weight: bold;")
+        self.load_config_btn.clicked.connect(self.load_config_file)
+        self.load_config_btn.setEnabled(False)
+        file_row.addWidget(self.load_config_btn)
+
+        upload_layout.addLayout(file_row)
+        upload_group.setLayout(upload_layout)
+        layout.addWidget(upload_group)
 
         # Input fields
         input_group = QGroupBox("PDB Clone Configuration")
